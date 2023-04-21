@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
+import { View, Text, TouchableOpacity,ScrollView } from 'react-native';
+import Expense from './Expense';
+import Balance from './Balance';
 
-const Tabs = () => {
+
+const Tabs = ({groupExpenses, balance}) => {
   const [activeTab, setActiveTab] = useState(0);
 
   const handleTabPress = (tabIndex) => {
@@ -42,13 +45,17 @@ const Tabs = () => {
       </View>
 
       {activeTab === 0 && (
-        <View>
-          <Text style={{color:'white'}}>Content for Tab 1</Text>
-        </View>
+    
+
+          <ScrollView  style={{marginTop:10}}>
+            {groupExpenses.map((data,index)=>{ return (<Expense key={index}  iname={data.iname} name={data.name} date={data.date} amount={data.amount}/>);})}
+          </ScrollView>
+
+    
       )}
       {activeTab === 1 && (
-        <View>
-          <Text style={{color:'white'}}>Content for Tab 2</Text>
+        <View style={{marginTop:10}}>
+          {balance.map((data,index)=>{return (<Balance key={index} userName={data.userName} amount={data.amount}/>)})}
         </View>
       )}
 
