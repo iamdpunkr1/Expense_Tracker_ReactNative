@@ -3,6 +3,7 @@ import React from 'react'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
+import AntDesign from 'react-native-vector-icons/AntDesign'
 
 const Expense = ({iname, name, date, amount}) => {
   return (
@@ -17,7 +18,7 @@ const Expense = ({iname, name, date, amount}) => {
             </View>
         </View>
         <View>
-        <MaterialIcons style={{paddingLeft:25}} name='delete-forever' size={20} color="#b5807f"/>
+        <AntDesign style={{paddingLeft:24}} name='delete' size={20} color="#b5807f"/>
         <Text   style={{color:"white", fontSize:16,fontFamily:"Roboto-Medium",marginTop:5, marginRight:10}}>
           <FontAwesome5 name='rupee-sign' size={16} color="white"/> {amount}
         </Text> 

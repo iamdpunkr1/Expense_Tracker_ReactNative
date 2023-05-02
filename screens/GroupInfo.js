@@ -55,17 +55,17 @@ const GroupInfo = ({navigation}) => {
  const actions = [
   {
     text: "Add Expense",
-    icon: <FontAwesome5 name="file-invoice"  size={18} color="white"/>,
+    icon: <FontAwesome5 name="file-invoice"  size={18} color="#d7261b"/>,
     name: "add_expense",
     position: 1,
-    color:"#d7261b"
+    color:"white"
   },
   {
     text: "Add member",
-    icon: <Ionicons name="person-add-sharp"  size={18} color="white"/>,
+    icon: <Ionicons name="person-add-sharp"  size={18} color="#d7261b"/>,
     name: "add_member",
     position: 2,
-    color:"#d7261b"
+    color:"white"
   },
  
 ];
@@ -78,7 +78,7 @@ const GroupInfo = ({navigation}) => {
       {/*Back button */}
         <View style={{marginTop:5, flexDirection:'row'}}>
              <TouchableOpacity
-                  onPress={()=>{navigation.navigate("Home")}}>
+                  onPress={()=>{navigation.navigate("Dash")}}>
                          <Ionicons name="arrow-back" size={40} color="#9ca3af"/>
             </TouchableOpacity>          
         </View>
@@ -267,8 +267,10 @@ const GroupInfo = ({navigation}) => {
                                  
                               </View>
                           </View>
-
-                        
+                          <View>
+                          <Text style={{fontWeight:"bold" ,color:"white", fontSize:16,fontFamily:"Roboto-Medium",marginTop:2}}>Split:</Text> 
+                          </View>
+                       
         <View style={{flex:0,flexDirection:'row',marginTop:35}}>
                    <TouchableOpacity
                          style={{

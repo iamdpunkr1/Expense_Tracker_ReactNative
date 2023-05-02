@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity,ScrollView,Modal, TextInput } from 'react-native'
+import { View, Text, TouchableOpacity,ScrollView,Modal, TextInput, Image } from 'react-native'
 import React, {useState}  from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import Ionicons from 'react-native-vector-icons/Ionicons'
@@ -24,14 +24,17 @@ const Home = ({navigation}) => {
      <View  style={{paddingHorizontal:15}}>
       {/*Hi Dipankar! start */}
         <View style={{marginTop:5, flexDirection:'row'}}>
-            <Ionicons name="person-circle" size={50} color="#9ca3af"/>
+        <Image
+            source={require('../assets/user3.png')}
+            style={{height: 55, width: 55}}
+          />
             <Text style={{color:"white",marginTop:12, fontSize:20, marginLeft:5,fontFamily:"Roboto-Medium",marginRight:180}}>Hi, Dipankar!</Text>
             <TouchableOpacity
-                  onPress={()=>{navigation.navigate("Login")}}>
+                  onPress={()=>{navigation.openDrawer()}}>
                         <SimpleLineIcons
                             style={{marginTop:10}}
-                            name='logout'
-                            size={28}
+                            name='menu'
+                            size={26}
                             color="#9ca3af"  />
             </TouchableOpacity>          
         </View>
