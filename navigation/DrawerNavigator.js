@@ -38,11 +38,11 @@ const DrawerNavigator = () => {
         }}
       />
       <Drawer.Screen
-        name="Graph"
+        name="Balance"
         component={Graph}
         options={{
           drawerIcon: ({color}) => (
-            <Foundation name="graph-pie" size={22} color={color} />
+            <Foundation name="graph-trend" size={22} color={color} />
           ),
         }}
       />
@@ -51,7 +51,7 @@ const DrawerNavigator = () => {
         component={Analysis}
         options={{
           drawerIcon: ({color}) => (
-            <Foundation name="graph-trend" size={22} color={color} />
+            <Foundation name="graph-pie" size={22} color={color} />
           ),
         }}
       />

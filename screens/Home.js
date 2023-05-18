@@ -140,8 +140,8 @@ const Home = ({navigation}) => {
             <Text  className='font-bold'   style={{color:"white", fontSize:16,fontFamily:"Roboto-Medium",}}>Groups:</Text>
             <TouchableOpacity
               onPress={()=>{setactive(!active)}}
-              className='rounded' style={{backgroundColor:"#cbc4c5"}}>
-            <Text   style={{color:"black", fontSize:16,fontFamily:"Roboto-Medium", padding:5, paddingHorizontal:15,}}>Create Group</Text>
+              className='rounded' style={{backgroundColor:"#b5807f"}}>
+            <Text   style={{color:"black", fontSize:18,fontFamily:"Roboto-Medium", paddingHorizontal:15,fontWeight:"bold"}}>+</Text>
             </TouchableOpacity>
         </View>
         {/*Groups text end */}
@@ -157,8 +157,8 @@ const Home = ({navigation}) => {
         {/*Personal text start */}
         <View style={{flex:0,flexDirection:'row',justifyContent:'space-between',marginTop:40}}>
             <Text   className='font-bold'   style={{color:"white", fontSize:16,fontFamily:"Roboto-Medium",}}>Personal Expenses:</Text>
-            <TouchableOpacity className='rounded'>
-            <Text   className='font-bold'  style={{color:"#e44816", fontSize:16,fontFamily:"Roboto-Medium",}}>View all</Text>
+            <TouchableOpacity className='rounded' onPress={()=>navigation.navigate("Expenses")}>
+              <Text   className='font-bold'  style={{color:"#e44816", fontSize:16,fontFamily:"Roboto-Medium",}}>View all</Text>
              </TouchableOpacity>
         </View>
          {/*Personal text END*/}

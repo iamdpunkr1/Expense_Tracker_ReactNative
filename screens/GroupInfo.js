@@ -7,11 +7,18 @@ import Tabs from '../partials/Tabs'
 import { FloatingAction } from "react-native-floating-action";
 import DatePicker from '../partials/DatePicker'
 import DropdownComponent from '../partials/DropdownComponent'
+import AntDesign from 'react-native-vector-icons/AntDesign'
+import Share from '../partials/Share'
 
 const GroupInfo = ({navigation}) => {
 
   const [active , setactive] = useState(false);
   const [expactive , setexpactive] = useState(false);
+  const [activeTab, setActiveTab] = useState(0);
+
+  const handleTabPress = (tabIndex) => {
+    setActiveTab(tabIndex);
+  };
 
   const groupExpenses=[
     {
@@ -214,7 +221,7 @@ const GroupInfo = ({navigation}) => {
                             justifyContent: 'center',}}>
             <View  style={ {
                         backgroundColor : "black" ,
-                        height :400 ,
+                        height :600 ,
                         minWidth:'90%',
                         borderRadius : 15,
                         alignItems : "center",
@@ -267,8 +274,89 @@ const GroupInfo = ({navigation}) => {
                                  
                               </View>
                           </View>
+                          {/* Splitting  */}
                           <View>
-                          <Text style={{fontWeight:"bold" ,color:"white", fontSize:16,fontFamily:"Roboto-Medium",marginTop:2}}>Split:</Text> 
+                           <Text style={{fontWeight:"bold" ,color:"white", fontSize:16,fontFamily:"Roboto-Medium",marginTop:10}}>Split:</Text> 
+
+                           <View style={{marginTop:10, width:300}}>
+                            <View style={{ flexDirection: 'row',borderColor:"#cbc4c5",borderWidth:3,borderRadius:5}}>
+                              <TouchableOpacity
+                                onPress={() => handleTabPress(0)}
+                                style={{
+                                  backgroundColor: activeTab === 0 ? '#cbc4c5' : '#0d0f14',
+                                  padding: 10,
+                                  flex: 1,
+                                  alignItems: 'center',
+                                
+                                }}
+                              >
+                                <Text
+                                style={{ color: activeTab === 0 ? '#0d0f14' : '#cbc4c5',}}>Equally</Text>
+                              </TouchableOpacity>
+                              <TouchableOpacity
+                                onPress={() => handleTabPress(1)}
+                                style={{
+                                  backgroundColor: activeTab === 1 ? '#cbc4c5' : '#0d0f14',
+                                  padding: 10,
+                                  flex: 1,
+                                  alignItems: 'center',
+                                  
+                                }}
+                              >
+                                <Text style={{ color: activeTab === 1 ? '#0d0f14' : '#cbc4c5'}}>By Share</Text>
+                              </TouchableOpacity>
+
+                            </View>
+
+                            {activeTab === 0 && (
+                              <View>
+                                <View style={{marginTop:10,flexDirection: 'row',justifyContent:"space-between",borderColor:"#cbc4c5",borderWidth:2,borderRadius:5,padding:10}}>
+                                  <Text style={{color:"white"}}>Akash Chetia</Text>
+                                  <View>
+                                  <Text   style={{color:"#b5807f", fontSize:16,fontFamily:"Roboto-Medium", marginRight:10}}>
+                                    <FontAwesome5 name='rupee-sign' size={16} color="#b5807f"/> 500
+                                  </Text> 
+                                  </View>
+                                </View>
+
+                                <View style={{marginTop:10,flexDirection: 'row',justifyContent:"space-between",borderColor:"#cbc4c5",borderWidth:2,borderRadius:5,padding:10}}>
+                                  <Text style={{color:"white"}}>Dipankar Prasad</Text>
+                                  <View>
+                                  <Text   style={{color:"#b5807f", fontSize:16,fontFamily:"Roboto-Medium", marginRight:10}}>
+                                    <FontAwesome5 name='rupee-sign' size={16} color="#b5807f"/> 500
+                                  </Text> 
+                                  </View>
+                                </View>
+                              </View>
+
+                          
+                            )}
+                            {activeTab === 1 && (
+                              <View>
+                                <Share/>
+
+                              <View style={{marginTop:10,flexDirection: 'row',justifyContent:"space-between",borderColor:"#cbc4c5",borderBottomWidth:2,borderRadius:5,padding:10}}>
+                                <Text style={{color:"white"}}>Dipankar Prasad</Text>
+                                <View style={{flexDirection:"row"}}>
+                                  <TouchableOpacity style={{marginRight:10}}>
+                                    <FontAwesome5 name='minus-square' size={21} color="#d3d392"/>
+                                  </TouchableOpacity>
+                                  <Text style={{color:"white",fontSize:16,fontWeight:"600",marginRight:10}}>2</Text>
+                                  <TouchableOpacity>
+                                    <FontAwesome5 name='plus-square' size={21} color="#ff9356"/>
+                                  </TouchableOpacity>
+                                </View>
+                                <View>
+                                <Text   style={{color:"#b5807f", fontSize:16,fontFamily:"Roboto-Medium", marginRight:10}}>
+                                  <FontAwesome5 name='rupee-sign' size={16} color="#b5807f"/> 1000
+                                </Text> 
+                                </View>
+                              </View>
+
+                            </View>
+                            )}
+
+                          </View>
                           </View>
                        
         <View style={{flex:0,flexDirection:'row',marginTop:35}}>
