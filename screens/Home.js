@@ -10,6 +10,7 @@ import DashGroup from '../partials/DashGroup'
 import Expense from '../partials/Expense'
 import DropdownComponent from '../partials/DropdownComponent'
 import DatePicker from '../partials/DatePicker'
+import LinearGradient from 'react-native-linear-gradient';
 
 const Home = ({navigation}) => {
   const [active , setactive] = useState(false);
@@ -23,24 +24,27 @@ const Home = ({navigation}) => {
    {/*Padding Horizontal start*/}
      <View  style={{paddingHorizontal:15}}>
       {/*Hi Dipankar! start */}
-        <View style={{marginTop:5, flexDirection:'row'}}>
-        <Image
+        <View style={{marginTop:5, flexDirection:'row',justifyContent:"space-between"}}>
+          <View style={{flexDirection:"row"}}>
+          <Image
             source={require('../assets/user3.png')}
             style={{height: 55, width: 55}}
           />
-            <Text style={{color:"white",marginTop:12, fontSize:20, marginLeft:5,fontFamily:"Roboto-Medium",marginRight:180}}>Hi, Dipankar!</Text>
+            <Text style={{color:"white",marginTop:12, fontSize:20, marginLeft:5,fontFamily:"Roboto-Medium",}}>Hi, Dipankar!</Text>
+          </View>
+      
             <TouchableOpacity
                   onPress={()=>{navigation.openDrawer()}}>
-                        <SimpleLineIcons
-                            style={{marginTop:10}}
+                        <MaterialIcons
+                            style={{marginTop:10,}}
                             name='menu'
-                            size={26}
+                            size={35}
                             color="#9ca3af"  />
             </TouchableOpacity>          
         </View>
         {/*Hi Dipankar! End */} 
         {/*Total Expensea! start */}
-        <View  style={{backgroundColor:"#e44816"}}   className='rounded-md h-28 w-full p-5 mt-2 text-center'>
+        <LinearGradient colors={['#e44816','#d7261b']}   style={{backgroundColor:"#e44816"}}   className='rounded-md h-28 w-full p-5 mt-2 text-center'>
             <Text  style={{color:"white", fontSize:16, marginLeft:5,fontFamily:"Roboto-Medium",}}>Total Expenses</Text>
             <Text    className='font-bold mt-1 ml-2' style={{fontFamily:"Roboto-Medium", color:"white",fontSize:30}}>
                      <FontAwesome5
@@ -49,7 +53,7 @@ const Home = ({navigation}) => {
                             color="#fff"
                               /> 4,543
              </Text>
-        </View>
+        </LinearGradient>
         {/*Total Expensea! end */}
         <Modal
           animationType="slide"
@@ -137,7 +141,7 @@ const Home = ({navigation}) => {
 
        {/*Groups text start */}
         <View style={{flex:0,flexDirection:'row',justifyContent:'space-between',marginTop:25}}>
-            <Text  className='font-bold'   style={{color:"white", fontSize:16,fontFamily:"Roboto-Medium",}}>Groups:</Text>
+            <Text  className='font-bold'   style={{color:"white", fontSize:18,fontFamily:"Roboto-Medium",}}>Groups</Text>
             <TouchableOpacity
               onPress={()=>{setactive(!active)}}
               className='rounded' style={{backgroundColor:"#b5807f"}}>
@@ -156,7 +160,7 @@ const Home = ({navigation}) => {
 
         {/*Personal text start */}
         <View style={{flex:0,flexDirection:'row',justifyContent:'space-between',marginTop:40}}>
-            <Text   className='font-bold'   style={{color:"white", fontSize:16,fontFamily:"Roboto-Medium",}}>Personal Expenses:</Text>
+            <Text   className='font-bold'   style={{color:"white", fontSize:18,fontFamily:"Roboto-Medium",}}>Recent Expenses</Text>
             <TouchableOpacity className='rounded' onPress={()=>navigation.navigate("Expenses")}>
               <Text   className='font-bold'  style={{color:"#e44816", fontSize:16,fontFamily:"Roboto-Medium",}}>View all</Text>
              </TouchableOpacity>

@@ -1,139 +1,213 @@
-import { View, Text, Dimensions } from 'react-native'
-import React from 'react'
-import { PieChart } from "react-native-gifted-charts";
-const Graph = () => {
-  const pieData = [
-    {
-      value: 47,
-      color: '#009FFF',
-      gradientCenterColor: '#006DFF',
-      focused: true,
-    },
-    {value: 40, color: '#93FCF8', gradientCenterColor: '#3BE9DE'},
-    {value: 16, color: '#BDB2FA', gradientCenterColor: '#8F80F3'},
-    {value: 3, color: '#FFA5BA', gradientCenterColor: '#FF7F97'},
-  ];
-  
-  const renderDot = color => {
-    return (
-      <View
-        style={{
-          height: 10,
-          width: 10,
-          borderRadius: 5,
-          backgroundColor: color,
-          marginRight: 10,
-        }}
-      />
-    );
-  };
-  
-  const renderLegendComponent = () => {
-    return (
-      <>
-        <View
-          style={{
-            flexDirection: 'row',
-            justifyContent: 'center',
-            marginBottom: 10,
-          }}>
-          <View
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              width: 120,
-              marginRight: 20,
-            }}>
-            {renderDot('#006DFF')}
-            <Text style={{color: 'white'}}>Excellent: 47%</Text>
-          </View>
-          <View
-            style={{flexDirection: 'row', alignItems: 'center', width: 120}}>
-            {renderDot('#8F80F3')}
-            <Text style={{color: 'white'}}>Okay: 16%</Text>
-          </View>
-          
-        </View>
-        <View style={{flexDirection: 'row', justifyContent: 'center'}}>
-          <View
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              width: 120,
-              marginRight: 20,
-            }}>
-            {renderDot('#3BE9DE')}
-            <Text style={{color: 'white'}}>Good: 40%</Text>
-          </View>
-          <View
-            style={{flexDirection: 'row', alignItems: 'center', width: 120}}>
-            {renderDot('#FF7F97')}
-            <Text style={{color: 'white'}}>Poor: 3%</Text>
-          </View>
-        </View>
-        <View style={{flexDirection: 'row', justifyContent: 'center', marginTop: 10,}}>
-          <View
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              width: 120,
-              marginRight: 20,
-            }}>
-            {renderDot('#3BE9DE')}
-            <Text style={{color: 'white'}}>Good: 40%</Text>
-          </View>
-          <View
-            style={{flexDirection: 'row', alignItems: 'center', width: 120}}>
-            {renderDot('#FF7F97')}
-            <Text style={{color: 'white'}}>Poor: 3%</Text>
-          </View>
-        </View>
-      </>
-    );
-  };
+import { View, Text, TouchableOpacity, Modal,TextInput } from 'react-native'
+import React, { useState } from 'react'
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
+import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'
+import { SafeAreaView } from 'react-native-safe-area-context'
+import Donut from '../partials/Donut'
+import { ScrollView } from 'react-native-gesture-handler'
+const Graph = ({navigation}) => {
+
+  const [balance,setBalance] = useState('4000')
+  const [spent,setSpent] = useState(3000)
+  const [active , setactive] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
   
   return (
-    <View
-      style={{
-        paddingVertical: 100,
-        backgroundColor: '#34448B',
-        flex: 1,
-      }}>
-      <View
-        style={{
-          margin: 20,
-          padding: 16,
-          borderRadius: 20,
-          backgroundColor: '#232B5D',
-        }}>
-        <Text style={{color: 'white', fontSize: 16, fontWeight: 'bold'}}>
-          Performance
-        </Text>
-        <View style={{padding: 20, alignItems: 'center'}}>
-          <PieChart
-            data={pieData}
-            donut
-            showGradient
-            sectionAutoFocus
-            radius={90}
-            innerRadius={60}
-            innerCircleColor={'#232B5D'}
-            centerLabelComponent={() => {
-              return (
-                <View style={{justifyContent: 'center', alignItems: 'center'}}>
-                  <Text
-                    style={{fontSize: 22, color: 'white', fontWeight: 'bold'}}>
-                    47%
-                  </Text>
-                  <Text style={{fontSize: 14, color: 'white'}}>Excellent</Text>
-                </View>
-              );
-            }}
-          />
+  
+    <SafeAreaView style={{flex:1, backgroundColor:"#0d0f14"}}>
+    <View style={{backgroundColor:"#0d0f14"}}>
+
+            {/*Navigation*/}
+            <View style={{backgroundColor:"#0d0f14",marginTop:5, shadowColor: '#9ca3af', paddingBottom:10,
+              shadowOffset: { width: 0, height: 1 },
+              shadowOpacity:  0.3,
+              shadowRadius: 3,
+              elevation: 2,}}>
+              <View style={{flexDirection:'row',paddingHorizontal:20,justifyContent:"space-between"}}>
+              <Text style={{color:"white",marginTop:12, fontSize:20, marginLeft:5,fontFamily:"Roboto-Medium",fontWeight:700}}>Balance</Text>
+            <TouchableOpacity
+                  onPress={()=>{navigation.openDrawer()}}>
+                        <MaterialIcons
+                            style={{marginTop:8}}
+                            name='menu'
+                            size={35}
+                            color="#9ca3af"  />
+            </TouchableOpacity>     
+              </View>
+   
         </View>
-        {renderLegendComponent()}
-      </View>
-    </View>);
+        {/*Navigation*/} 
+        </View>
+
+        <View style={{paddingHorizontal:20}}>
+          <View  style={{backgroundColor:"#e44816",borderTopLeftRadius:7,borderTopRightRadius:7,flexDirection:"row",justifyContent:"space-around"}}   className=' h-26 w-full p-5 mt-2'>
+            <View>
+                <Text  style={{color:"white", fontSize:16,fontFamily:"Roboto-Medium",}}>Monthly Balance</Text>
+                <Text    className='font-bold mt-1' style={{fontFamily:"Roboto-Medium", color:"white",fontSize:26}}>
+                        <FontAwesome5
+                                name='rupee-sign'
+                                size={26}
+                                color="#fff"
+                                  /> {balance}
+                </Text>
+            </View>
+
+            <TouchableOpacity   onPress={()=>{setactive(!active)}} style={{backgroundColor:"white",padding:10,marginVertical:12,paddingHorizontal:20,
+                                    borderRadius:10,borderColor:"#d7261b",borderWidth:3}}>
+              <Text style={{color:"#d7261b",fontWeight:700}}>Change</Text>
+            </TouchableOpacity>
+          </View>
+
+          <View style={{backgroundColor:"#492d33",borderBottomRightRadius:7,borderBottomLeftRadius:7}}>
+
+            <View style={{flexDirection:"row",paddingBottom:3,paddingTop:15,paddingLeft:50}}>
+              <View style={{flexDirection:"row"}}>
+              <FontAwesome5
+                                  style={{marginTop:5}}
+                                  name='rupee-sign'
+                                  size={22}
+                                  color="#fff"
+                                    /> 
+                <Text style={{color:"white", fontSize:22, marginLeft:5,fontFamily:"Roboto-Medium",}}>
+                  {spent}
+                </Text>
+              </View>
+              <Text style={{color:"#cbc4c5",marginLeft:10,marginTop:5 ,fontSize:16, marginLeft:20,fontFamily:"Roboto-Medium",}}>
+                : Amount spent this month
+              </Text>
+            </View>
+            <Text style={{color:"#fff", fontSize:20, marginLeft:40,fontFamily:"Roboto-Medium",}}>---------------------------------------------------</Text>
+            <View style={{flexDirection:"row",paddingBottom:20,paddingLeft:50}}>
+              <View style={{flexDirection:"row"}}>
+              <FontAwesome5
+                                  style={{marginTop:5}}
+                                  name='rupee-sign'
+                                  size={22}
+                                  color="#fff"
+                                    /> 
+                <Text style={{color:"white", fontSize:22, marginLeft:5,fontFamily:"Roboto-Medium",}}>
+                 {balance-spent}
+                </Text>
+              </View>
+              <Text style={{color:"#cbc4c5",marginLeft:10,marginTop:5 ,fontSize:16, marginLeft:20,fontFamily:"Roboto-Medium",}}>
+                : Remaining Balance
+              </Text>
+            </View>
+          </View>
+          <ScrollView style={{height:450}}>
+             {isVisible && <Donut/>}
+          </ScrollView>
+
+        <TouchableOpacity
+            onPress={()=>{setIsVisible(!isVisible)}}
+            style={{
+              borderColor:"red",
+              borderWidth:3,
+              padding: 15,
+              borderRadius: 10,
+              marginBottom: 30,
+              marginTop:10,
+              marginHorizontal:20
+            }}>
+            <Text
+              style={{
+                textAlign: 'center',
+                fontWeight: '700',
+                fontSize: 16,
+                color: '#fff',
+              }}>
+             Analyse the Remaining Balance
+            </Text>
+        </TouchableOpacity>
+        </View>
+        {/*Total Expensea! end */}
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={active}
+          onRequestClose={() => {
+            console.warn("closed");
+          }}
+          >
+          <View style={{    flex: 1,
+                            backgroundColor : "black",
+                            alignItems: 'center',
+                            justifyContent: 'center',}}>
+            <View  style={ {
+                        backgroundColor : "black" ,
+                        height :300 ,
+                        minWidth:'90%',
+                        borderRadius : 15,
+                        alignItems : "center",
+                        justifyContent : "center",
+                        borderColor : "white",
+                        borderWidth:2,
+                      }}>
+                    <Text style={ {
+                          fontWeight:"500",
+                          fontSize : 20,
+                          color : "white",
+                          marginBottom:30,
+                          paddingTop:30
+                        }}>Set new monthly balance</Text>
+                       <View className=' border-solid border-2 w-full border-b-gray-400'  style={{flexDirection:"row"}}>
+                          <FontAwesome5
+                              name='rupee-sign'
+                              size={26}
+                              color="#9ca3af"
+                              style={{marginRight: 5}}
+                            />
+                            <TextInput  
+                               placeholderTextColor={"#9ca3af"}
+                               value={balance}
+                               onChangeText={(e)=>setBalance(e)}
+                               placeholder='Enter the amount'
+                                 style={{paddingVertical:0, color:"white",minWidth:'75%',fontSize:24}}/>
+                          </View>        
+
+        <View style={{flex:0,flexDirection:'row',marginTop:20}}>
+                   <TouchableOpacity
+                         style={{
+                          backgroundColor: '#492d33',
+                          padding: 15,
+                          borderRadius: 10,
+                          marginBottom: 30,
+                          width:'25%',
+                          marginTop:5,
+                          marginRight:10
+                        }}
+                          onPress={()=>{setactive(!active)}}>
+                            <Text style={ {
+                                    textAlign: 'center',
+                                    fontWeight: '700',
+                                    fontSize: 16,
+                                    color: '#fff',
+                        }}>Cancel</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                         style={{
+                          backgroundColor: '#d7261b',
+                          padding: 15,
+                          borderRadius: 10,
+                          marginBottom: 30,
+                          width:'40%',
+                          marginTop:5
+                        }}
+                          onPress={()=>{setactive(!active)}}>
+                            <Text style={ {
+                                    textAlign: 'center',
+                                    fontWeight: '700',
+                                    fontSize: 16,
+                                    color: '#fff',
+                        }}>Confirm</Text>
+                  </TouchableOpacity>
+        </View>
+
+            </View>
+          </View>
+        </Modal>
+    </SafeAreaView>
+);
 }
 
 export default Graph

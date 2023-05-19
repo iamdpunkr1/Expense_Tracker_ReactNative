@@ -12,7 +12,7 @@ const Expenses = ({navigation}) => {
       <View style={{backgroundColor:"#0d0f14"}}>
 
               {/*Navigation*/}
-              <View style={{backgroundColor:"#0d0f14",marginTop:5, shadowColor: '#9ca3af', paddingBottom:10,
+              <View style={{backgroundColor:"#0d0f14",marginTop:5, shadowColor: '#9ca3af', paddingBottom:15,
                 shadowOffset: { width: 0, height: 3 },
                 shadowOpacity:  1,
                 shadowRadius: 3,

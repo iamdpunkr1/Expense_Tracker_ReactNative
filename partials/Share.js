@@ -3,8 +3,8 @@ import AntDesign from 'react-native-vector-icons/AntDesign'
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'
 import React,{useState} from 'react'
 
-const Share = () => {
-    const [count, setCount] = useState(0);
+const Share = ({name,amount}) => {
+    const [count, setCount] = useState(1);
 
     const increment = () => {
       setCount(count + 1);
@@ -17,7 +17,7 @@ const Share = () => {
     };
   return (
     <View style={{marginTop:10,flexDirection: 'row',justifyContent:"space-between",borderColor:"#cbc4c5",borderBottomWidth:2,borderRadius:5,padding:10}}>
-    <Text style={{color:"white"}}>Akash Chetia</Text>
+    <Text style={{color:"white"}}>{name}</Text>
     <View style={{flexDirection:"row"}}>
       <TouchableOpacity style={{marginRight:10}} onPress={decrement}>
         <AntDesign name='minussquare' size={21} color="#d3d392"/>
@@ -29,7 +29,7 @@ const Share = () => {
     </View>
     <View>
     <Text   style={{color:"#b5807f", fontSize:16,fontFamily:"Roboto-Medium", marginRight:10}}>
-      <FontAwesome5 name='rupee-sign' size={16} color="#b5807f"/> 5000
+      <FontAwesome5 name='rupee-sign' size={16} color="#b5807f"/>{(amount/2)*count}
     </Text> 
     </View>
   </View>

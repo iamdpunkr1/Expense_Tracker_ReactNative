@@ -2,7 +2,8 @@ import { View, Text, Image, TouchableOpacity } from 'react-native'
 import React,{useState} from 'react'
 import {  PieChart } from "react-native-gifted-charts";
 import ButtonGroup from '../partials/ButtonGroup';
-import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons'
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
+import { SafeAreaView } from 'react-native-safe-area-context';
 const Analysis = ({navigation}) => {
   const [selectedButton, setSelectedButton] = useState(null); // Initialize state for selected button
 
@@ -34,21 +35,28 @@ const Analysis = ({navigation}) => {
   };
 
   return (
-    <View style={{flex:1,paddingHorizontal: 30,backgroundColor:"#0d0f14"}}>
-            {/*Hi Dipankar! start */}
-            <View style={{marginTop:5, flexDirection:'row'}}>
+  <SafeAreaView style={{flex:1,backgroundColor:"#0d0f14"}}>
+            {/*Navigation */}
+            <View style={{paddingHorizontal:20,backgroundColor:"#0d0f14", shadowColor: '#9ca3af',zIndex:999,paddingBottom:8,
+              shadowOffset: { width: 0, height: 1 },
+              shadowOpacity:  0.3,
+              shadowRadius: 3,
+              elevation: 2,}}>
+            <View style={{ flexDirection:'row',justifyContent:"space-between"}}>
 
-            <Text style={{color:"white",marginTop:12, fontSize:20, marginLeft:5,fontFamily:"Roboto-Medium",marginRight:180,fontWeight:"bold"}}>Spend Analysis</Text>
+            <Text style={{color:"white",marginTop:12, fontSize:20,fontFamily:"Roboto-Medium",fontWeight:"bold"}}>Spend Analysis</Text>
             <TouchableOpacity
                   onPress={()=>{navigation.openDrawer()}}>
-                        <SimpleLineIcons
+                        <MaterialIcons
                             style={{marginTop:10}}
                             name='menu'
-                            size={26}
+                            size={35}
                             color="#9ca3af"  />
             </TouchableOpacity>          
         </View>
-        {/*Hi Dipankar! End */} 
+        </View>
+        {/*Navigation */} 
+        <View style={{paddingHorizontal:20}}>
       <View
         style={{
           
@@ -121,6 +129,7 @@ const Analysis = ({navigation}) => {
         <Text style={{color:"white"}}>You selected button {selectedButton + 1}</Text>
       )}
     </View>
+    </SafeAreaView>
 );
 
 }

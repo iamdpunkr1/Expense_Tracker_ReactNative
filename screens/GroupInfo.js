@@ -9,7 +9,7 @@ import DatePicker from '../partials/DatePicker'
 import DropdownComponent from '../partials/DropdownComponent'
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import Share from '../partials/Share'
-
+import LinearGradient from 'react-native-linear-gradient'
 const GroupInfo = ({navigation}) => {
 
   const [active , setactive] = useState(false);
@@ -91,12 +91,12 @@ const GroupInfo = ({navigation}) => {
         </View>
         {/*Back button End */} 
         {/*Group Info! start */}
-        <View  style={{backgroundColor:"#e44816"}}   className='rounded-md h-28 w-full mb-2 p-5 mt-2 text-center'>
+        <LinearGradient colors={['#e44816','#d7261b']}   style={{backgroundColor:"#e44816",marginBottom:10}}   className='rounded-md h-28 w-full p-5 mt-2 text-center'>
              <Text    className='font-bold mt-1 ' style={{fontFamily:"Roboto-Medium", color:"white",fontSize:30}}>
                  Group: Ration
              </Text>
              <Text  style={{color:"white", fontSize:16, marginLeft:5,fontFamily:"Roboto-Medium",}}>Created by: You</Text>
-        </View>
+        </LinearGradient>
         {/*Group Info! end */}
          <View style={{flex:0,flexDirection:'row'}}>
          <View style={{backgroundColor:"#595b62",flex:0,justifyContent:'center',alignItems:'center',flexDirection:'row'}}   className='rounded-md pb-1 px-3 mr-1'>
@@ -333,25 +333,8 @@ const GroupInfo = ({navigation}) => {
                             )}
                             {activeTab === 1 && (
                               <View>
-                                <Share/>
-
-                              <View style={{marginTop:10,flexDirection: 'row',justifyContent:"space-between",borderColor:"#cbc4c5",borderBottomWidth:2,borderRadius:5,padding:10}}>
-                                <Text style={{color:"white"}}>Dipankar Prasad</Text>
-                                <View style={{flexDirection:"row"}}>
-                                  <TouchableOpacity style={{marginRight:10}}>
-                                    <FontAwesome5 name='minus-square' size={21} color="#d3d392"/>
-                                  </TouchableOpacity>
-                                  <Text style={{color:"white",fontSize:16,fontWeight:"600",marginRight:10}}>2</Text>
-                                  <TouchableOpacity>
-                                    <FontAwesome5 name='plus-square' size={21} color="#ff9356"/>
-                                  </TouchableOpacity>
-                                </View>
-                                <View>
-                                <Text   style={{color:"#b5807f", fontSize:16,fontFamily:"Roboto-Medium", marginRight:10}}>
-                                  <FontAwesome5 name='rupee-sign' size={16} color="#b5807f"/> 1000
-                                </Text> 
-                                </View>
-                              </View>
+                                <Share name="Akash Chetia" amount="500"/>
+                                <Share name="Dipankar Prasad" amount="500"/>
 
                             </View>
                             )}

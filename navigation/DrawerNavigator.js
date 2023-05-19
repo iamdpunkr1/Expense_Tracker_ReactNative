@@ -1,4 +1,4 @@
-import {Text, View } from 'react-native'
+
 import React from 'react'
 import { createDrawerNavigator } from '@react-navigation/drawer'
 import GroupStack from './GroupStack'
@@ -7,8 +7,8 @@ import Analysis from '../screens/Analysis'
 import CustomDrawer from '../partials/CustomDrawer'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import Foundation from 'react-native-vector-icons/Foundation'
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 
-import { createNativeStackNavigator } from '@react-navigation/native-stack'
 
 
 const Drawer = createDrawerNavigator()
@@ -42,7 +42,7 @@ const DrawerNavigator = () => {
         component={Graph}
         options={{
           drawerIcon: ({color}) => (
-            <Foundation name="graph-trend" size={22} color={color} />
+            <MaterialIcons name="account-balance-wallet" size={22} color={color} />
           ),
         }}
       />
