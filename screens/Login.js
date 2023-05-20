@@ -34,7 +34,7 @@ const Login = ({navigation}) => {
         <TextInput   placeholder='Password' placeholderTextColor={"#9ca3af"} secureTextEntry={true} style={{paddingVertical:0, color:"white"}}/>
         </View>
         <TouchableOpacity
-        onPress={()=>{navigation.navigate("Home")}}
+        onPress={()=>{navigation.navigate("DrawerNavigator")}}
        style={{
         backgroundColor: '#d7261b',
         padding: 15,

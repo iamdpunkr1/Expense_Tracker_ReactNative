@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
+import { View, Text, TouchableOpacity,ScrollView } from 'react-native';
+import Expense from './Expense';
+import Balance from './Balance';
 
-const Tabs = () => {
+
+const Tabs = ({groupExpenses, balance}) => {
   const [activeTab, setActiveTab] = useState(0);
 
   const handleTabPress = (tabIndex) => {
@@ -9,8 +12,8 @@ const Tabs = () => {
   };
 
   return (
-    <View style={{marginTop:10}}>
-      <View style={{ flexDirection: 'row' }}>
+    <View style={{marginTop:10,}}>
+      <View style={{ flexDirection: 'row',borderColor:"white",borderWidth:10,borderRadius:5 }}>
         <TouchableOpacity
           onPress={() => handleTabPress(0)}
           style={{
@@ -18,12 +21,11 @@ const Tabs = () => {
             padding: 10,
             flex: 1,
             alignItems: 'center',
-            borderTopLeftRadius:7,
-            borderBottomLeftRadius:7
+
           }}
         >
           <Text
-           style={{ color: activeTab === 0 ? '#fff' : '#d7261b',}}>Expenses</Text>
+           style={{ color: activeTab === 0 ? '#fff' : '#d7261b',fontWeight:"bold"}}>Expenses</Text>
         </TouchableOpacity>
         <TouchableOpacity
           onPress={() => handleTabPress(1)}
@@ -32,23 +34,26 @@ const Tabs = () => {
             padding: 10,
             flex: 1,
             alignItems: 'center',
-            borderTopRightRadius:5,
-            borderBottomRightRadius:5
+           
           }}
         >
-          <Text style={{ color: activeTab === 1 ? '#fff' : '#d7261b'}}>Balance</Text>
+          <Text style={{ color: activeTab === 1 ? '#fff' : '#d7261b',fontWeight:"bold"}}>Balance</Text>
         </TouchableOpacity>
 
       </View>
 
       {activeTab === 0 && (
-        <View>
-          <Text style={{color:'white'}}>Content for Tab 1</Text>
-        </View>
+    
+
+          <ScrollView  style={{marginTop:10}}>
+            {groupExpenses.map((data,index)=>{ return (<Expense key={index}  iname={data.iname} name={data.name} date={data.date} amount={data.amount}/>);})}
+          </ScrollView>
+
+    
       )}
       {activeTab === 1 && (
-        <View>
-          <Text style={{color:'white'}}>Content for Tab 2</Text>
+        <View style={{marginTop:10}}>
+          {balance.map((data,index)=>{return (<Balance key={index} userName={data.userName} amount={data.amount}/>)})}
         </View>
       )}
 

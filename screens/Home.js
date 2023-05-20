@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity,ScrollView,Modal, TextInput } from 'react-native'
+import { View, Text, TouchableOpacity,ScrollView,Modal, TextInput, Image } from 'react-native'
 import React, {useState}  from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import Ionicons from 'react-native-vector-icons/Ionicons'
@@ -8,6 +8,9 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import Groups from '../partials/Groups'
 import DashGroup from '../partials/DashGroup'
 import Expense from '../partials/Expense'
+import DropdownComponent from '../partials/DropdownComponent'
+import DatePicker from '../partials/DatePicker'
+import LinearGradient from 'react-native-linear-gradient';
 
 const Home = ({navigation}) => {
   const [active , setactive] = useState(false);
@@ -21,21 +24,27 @@ const Home = ({navigation}) => {
    {/*Padding Horizontal start*/}
      <View  style={{paddingHorizontal:15}}>
       {/*Hi Dipankar! start */}
-        <View style={{marginTop:5, flexDirection:'row'}}>
-            <Ionicons name="person-circle" size={50} color="#9ca3af"/>
-            <Text style={{color:"white",marginTop:12, fontSize:20, marginLeft:5,fontFamily:"Roboto-Medium",marginRight:180}}>Hi, Dipankar!</Text>
+        <View style={{marginTop:5, flexDirection:'row',justifyContent:"space-between"}}>
+          <View style={{flexDirection:"row"}}>
+          <Image
+            source={require('../assets/user3.png')}
+            style={{height: 55, width: 55}}
+          />
+            <Text style={{color:"white",marginTop:12, fontSize:20, marginLeft:5,fontFamily:"Roboto-Medium",}}>Hi, Dipankar!</Text>
+          </View>
+      
             <TouchableOpacity
-                  onPress={()=>{navigation.navigate("Login")}}>
-                        <SimpleLineIcons
-                            style={{marginTop:10}}
-                            name='logout'
-                            size={28}
+                  onPress={()=>{navigation.openDrawer()}}>
+                        <MaterialIcons
+                            style={{marginTop:10,}}
+                            name='menu'
+                            size={35}
                             color="#9ca3af"  />
             </TouchableOpacity>          
         </View>
         {/*Hi Dipankar! End */} 
         {/*Total Expensea! start */}
-        <View  style={{backgroundColor:"#e44816"}}   className='rounded-md h-28 w-full p-5 mt-2 text-center'>
+        <LinearGradient colors={['#e44816','#d7261b']}   style={{backgroundColor:"#e44816"}}   className='rounded-md h-28 w-full p-5 mt-2 text-center'>
             <Text  style={{color:"white", fontSize:16, marginLeft:5,fontFamily:"Roboto-Medium",}}>Total Expenses</Text>
             <Text    className='font-bold mt-1 ml-2' style={{fontFamily:"Roboto-Medium", color:"white",fontSize:30}}>
                      <FontAwesome5
@@ -44,7 +53,7 @@ const Home = ({navigation}) => {
                             color="#fff"
                               /> 4,543
              </Text>
-        </View>
+        </LinearGradient>
         {/*Total Expensea! end */}
         <Modal
           animationType="slide"
@@ -69,11 +78,12 @@ const Home = ({navigation}) => {
                         borderWidth:2,
                       }}>
                     <Text style={ {
-                          fontSize : 17,
+                          fontWeight:"500",
+                          fontSize : 20,
                           color : "white",
-                          marginBottom:20,
+                          marginBottom:30,
                           paddingTop:30
-                        }}>Create a Group</Text>
+                        }}>Create a group</Text>
                        <View className=' border-solid border-2 w-full border-b-gray-400'  style={{flexDirection:"row"}}>
                           <MaterialIcons
                               name='groups'
@@ -83,20 +93,36 @@ const Home = ({navigation}) => {
                             />
                             <TextInput   placeholderTextColor={"#9ca3af"} placeholder='Enter the group name'  style={{paddingVertical:0, color:"white",minWidth:'75%'}}/>
                           </View>
-     <ScrollView horizontal={true} className='h-16 w-72'>                  
-        <View  style={{flex:0,flexDirection:'row' ,justifyContent:'space-evenly',alignContent:'space-between', marginTop:6,}}>
-          <Groups name="Shopping" iname="shopping-cart"/>
-          <Groups name="Rent" iname="restroom"/>
-          <Groups name="Ration" iname="shopping-basket"/>
-        </View>
-        </ScrollView>
+               <View style={{flex:0,width:"90%"}}>
+               <DropdownComponent />
+                </View>           
+
+        <View style={{flex:0,flexDirection:'row',marginTop:20}}>
+                   <TouchableOpacity
+                         style={{
+                          backgroundColor: '#492d33',
+                          padding: 15,
+                          borderRadius: 10,
+                          marginBottom: 30,
+                          width:'25%',
+                          marginTop:5,
+                          marginRight:10
+                        }}
+                          onPress={()=>{setactive(!active)}}>
+                            <Text style={ {
+                                    textAlign: 'center',
+                                    fontWeight: '700',
+                                    fontSize: 16,
+                                    color: '#fff',
+                        }}>Cancel</Text>
+                  </TouchableOpacity>
                   <TouchableOpacity
                          style={{
                           backgroundColor: '#d7261b',
                           padding: 15,
                           borderRadius: 10,
                           marginBottom: 30,
-                          minWidth:'60%',
+                          width:'40%',
                           marginTop:5
                         }}
                           onPress={()=>{setactive(!active)}}>
@@ -107,17 +133,19 @@ const Home = ({navigation}) => {
                                     color: '#fff',
                         }}>Add Group</Text>
                   </TouchableOpacity>
+        </View>
+
             </View>
           </View>
         </Modal>
 
        {/*Groups text start */}
         <View style={{flex:0,flexDirection:'row',justifyContent:'space-between',marginTop:25}}>
-            <Text  className='font-bold'   style={{color:"white", fontSize:16,fontFamily:"Roboto-Medium",}}>Groups:</Text>
+            <Text  className='font-bold'   style={{color:"white", fontSize:18,fontFamily:"Roboto-Medium",}}>Groups</Text>
             <TouchableOpacity
               onPress={()=>{setactive(!active)}}
-              className='rounded' style={{backgroundColor:"#cbc4c5"}}>
-            <Text   style={{color:"black", fontSize:16,fontFamily:"Roboto-Medium", padding:5, paddingHorizontal:15,}}>Create Group</Text>
+              className='rounded' style={{backgroundColor:"#b5807f"}}>
+            <Text   style={{color:"black", fontSize:18,fontFamily:"Roboto-Medium", paddingHorizontal:15,fontWeight:"bold"}}>+</Text>
             </TouchableOpacity>
         </View>
         {/*Groups text end */}
@@ -132,9 +160,9 @@ const Home = ({navigation}) => {
 
         {/*Personal text start */}
         <View style={{flex:0,flexDirection:'row',justifyContent:'space-between',marginTop:40}}>
-            <Text   className='font-bold'   style={{color:"white", fontSize:16,fontFamily:"Roboto-Medium",}}>Personal Expenses:</Text>
-            <TouchableOpacity className='rounded'>
-            <Text   className='font-bold'  style={{color:"#e44816", fontSize:16,fontFamily:"Roboto-Medium",}}>View all</Text>
+            <Text   className='font-bold'   style={{color:"white", fontSize:18,fontFamily:"Roboto-Medium",}}>Recent Expenses</Text>
+            <TouchableOpacity className='rounded' onPress={()=>navigation.navigate("Expenses")}>
+              <Text   className='font-bold'  style={{color:"#e44816", fontSize:16,fontFamily:"Roboto-Medium",}}>View all</Text>
              </TouchableOpacity>
         </View>
          {/*Personal text END*/}
@@ -190,7 +218,7 @@ const Home = ({navigation}) => {
                             justifyContent: 'center',}}>
             <View  style={ {
                         backgroundColor : "black" ,
-                        height :'50%' ,
+                        height :400 ,
                         minWidth:'90%',
                         borderRadius : 15,
                         alignItems : "center",
@@ -199,9 +227,10 @@ const Home = ({navigation}) => {
                         borderWidth:2,
                       }}>
                <Text style={ {
-                          fontSize : 17,
+                          fontWeight:"500",
+                          fontSize : 20,
                           color : "white",
-                          marginBottom:20,
+                          marginBottom:30,
                           paddingTop:30
                         }}>Add a Expense</Text>
                          <View className=' border-solid border-2 w-full border-b-gray-400'  style={{flexDirection:"row"}}>
@@ -224,43 +253,52 @@ const Home = ({navigation}) => {
                               <TextInput   placeholderTextColor={"#9ca3af"} placeholder='what was this expense for?'  style={{paddingVertical:0, color:"white",minWidth:'75%'}}/>
                           </View>
 
-                          <View className=' border-solid border-2 w-full border-b-gray-400 mt-3'  style={{flexDirection:"row"}}>
-                            <MaterialIcons
-                                name='date-range'
-                                size={30}
-                                color="#9ca3af"
-                                style={{marginRight: 5}}
-                              />
-                              <TextInput   placeholderTextColor={"#9ca3af"} placeholder='--/--/----'  style={{paddingVertical:0, color:"white",minWidth:'75%'}}/>
+                          <View style={{flex:0,flexDirection:"row",width:"73%"}}>
+                            <View>
+                            <DropdownComponent/>
+                            </View>
+
+                              <View className='border-solid border-2 border-b-gray-400 mt-3 ml-3'  style={{flexDirection:"row"}}>
+                                <MaterialIcons
+                                    name='date-range'
+                                    size={30}
+                                    color="#9ca3af"
+                                    style={{marginRight: 5}}
+                                  />
+                                  <View style={{paddingTop:5}}>
+                                   <DatePicker/>
+                                  </View>
+                                 
+                              </View>
                           </View>
-                          <ScrollView horizontal={true} className='h-16'>
+
                         
-        <View  style={{flex:0,flexDirection:'row' ,justifyContent:'space-evenly',alignContent:'space-between', marginTop:6,}}>
-          <View style={{backgroundColor:"#595b62",flex:0,justifyContent:'center',alignItems:'center'}}   className='rounded-md h-16 w-16 mt-2 mr-2'>
-           <FontAwesome5 name='shopping-cart' size={20} color="#0d0f14" /> 
-            <Text  className='font-bold'  style={{color:"white", fontSize:12,fontFamily:"Roboto-Medium",marginTop:5}}>Shopping</Text>              
-          </View>
-          <View style={{backgroundColor:"#595b62",flex:0,justifyContent:'center',alignItems:'center'}}   className='rounded-md h-16 w-16 mt-2 mr-2'>
-           <FontAwesome5 name='restroom' size={20} color="#0d0f14" /> 
-            <Text  className='font-bold'  style={{color:"white", fontSize:12,fontFamily:"Roboto-Medium",marginTop:5}}>Rent</Text>             
-          </View>
-          <View style={{backgroundColor:"#595b62",flex:0,justifyContent:'center',alignItems:'center'}}   className='rounded-md h-16 w-16 mt-2 mr-2'>
-           <FontAwesome5 name='shopping-basket' size={20} color="#0d0f14" /> 
-            <Text  className='font-bold'  style={{color:"white", fontSize:12,fontFamily:"Roboto-Medium",marginTop:5}}>Ration</Text>              
-          </View>
-          <View style={{backgroundColor:"#595b62",flex:0,justifyContent:'center',alignItems:'center'}}   className='rounded-md h-16 w-16 mt-2 mr-2'>
-           <MaterialIcons name='sports-basketball' size={20} color="#0d0f14" /> 
-            <Text  className='font-bold'  style={{color:"white", fontSize:12,fontFamily:"Roboto-Medium",marginTop:5}}>Sports</Text>                 
-          </View>
-        </View>
-        </ScrollView>
+        <View style={{flex:0,flexDirection:'row',marginTop:35}}>
+                   <TouchableOpacity
+                         style={{
+                          backgroundColor: '#492d33',
+                          padding: 15,
+                          borderRadius: 10,
+                          marginBottom: 30,
+                          width:'25%',
+                          marginTop:5,
+                          marginRight:10
+                        }}
+                          onPress={()=>{setexpactive(!expactive)}}>
+                            <Text style={ {
+                                    textAlign: 'center',
+                                    fontWeight: '700',
+                                    fontSize: 16,
+                                    color: '#fff',
+                        }}>Cancel</Text>
+                  </TouchableOpacity>
                   <TouchableOpacity
                          style={{
                           backgroundColor: '#d7261b',
                           padding: 15,
                           borderRadius: 10,
                           marginBottom: 30,
-                          minWidth:'60%',
+                          width:'40%',
                           marginTop:5
                         }}
                           onPress={()=>{setexpactive(!expactive)}}>
@@ -271,6 +309,7 @@ const Home = ({navigation}) => {
                                     color: '#fff',
                         }}>Add Expense</Text>
                   </TouchableOpacity>
+        </View>
             </View>
           </View>
         </Modal>
