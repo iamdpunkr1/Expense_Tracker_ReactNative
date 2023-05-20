@@ -13,7 +13,7 @@ const Tabs = ({groupExpenses, balance}) => {
 
   return (
     <View style={{marginTop:10,}}>
-      <View style={{ flexDirection: 'row',borderColor:"white",borderWidth:10,borderRadius:5 }}>
+      <View style={{ flexDirection: 'row',borderColor:"white",backgroundColor:"white",borderWidth:7,borderRadius:7 }}>
         <TouchableOpacity
           onPress={() => handleTabPress(0)}
           style={{
@@ -21,7 +21,7 @@ const Tabs = ({groupExpenses, balance}) => {
             padding: 10,
             flex: 1,
             alignItems: 'center',
-
+            borderRadius:7
           }}
         >
           <Text
@@ -34,7 +34,7 @@ const Tabs = ({groupExpenses, balance}) => {
             padding: 10,
             flex: 1,
             alignItems: 'center',
-           
+            borderRadius:7
           }}
         >
           <Text style={{ color: activeTab === 1 ? '#fff' : '#d7261b',fontWeight:"bold"}}>Balance</Text>

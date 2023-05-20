@@ -279,31 +279,31 @@ const GroupInfo = ({navigation}) => {
                            <Text style={{fontWeight:"bold" ,color:"white", fontSize:16,fontFamily:"Roboto-Medium",marginTop:10}}>Split:</Text> 
 
                            <View style={{marginTop:10, width:300}}>
-                            <View style={{ flexDirection: 'row',borderColor:"#cbc4c5",borderWidth:3,borderRadius:5}}>
+                            <View style={{ flexDirection: 'row',borderColor:"#cbc4c5",backgroundColor:"#cbc4c5",borderWidth:3,borderRadius:5}}>
                               <TouchableOpacity
                                 onPress={() => handleTabPress(0)}
                                 style={{
-                                  backgroundColor: activeTab === 0 ? '#cbc4c5' : '#0d0f14',
+                                  backgroundColor: activeTab === 0 ? '#0d0f14' : '#cbc4c5',
                                   padding: 10,
                                   flex: 1,
                                   alignItems: 'center',
-                                
+                                  borderRadius:7
                                 }}
                               >
                                 <Text
-                                style={{ color: activeTab === 0 ? '#0d0f14' : '#cbc4c5',}}>Equally</Text>
+                                style={{ color: activeTab === 0 ? '#cbc4c5' : '#0d0f14',}}>Equally</Text>
                               </TouchableOpacity>
                               <TouchableOpacity
                                 onPress={() => handleTabPress(1)}
                                 style={{
-                                  backgroundColor: activeTab === 1 ? '#cbc4c5' : '#0d0f14',
+                                  backgroundColor: activeTab === 1 ? '#0d0f14' : '#cbc4c5',
                                   padding: 10,
                                   flex: 1,
                                   alignItems: 'center',
-                                  
+                                  borderRadius:7
                                 }}
                               >
-                                <Text style={{ color: activeTab === 1 ? '#0d0f14' : '#cbc4c5'}}>By Share</Text>
+                                <Text style={{ color: activeTab === 1 ? '#cbc4c5' : '#0d0f14'}}>By Share</Text>
                               </TouchableOpacity>
 
                             </View>
