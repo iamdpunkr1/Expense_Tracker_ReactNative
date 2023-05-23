@@ -4,18 +4,18 @@ import { Dropdown } from 'react-native-element-dropdown';
 
 
 const data = [
-  { label: 'Education', value: 'education' },
-  { label: 'Food', value: 'food' },
-  { label: 'Medical', value: 'medical' },
-  { label: 'Rent', value: 'rent' },
-  { label: 'Social Event', value: 'socialEvent' },
-  { label: 'Shopping', value: 'shopping' },
-  { label: 'Miscelleneous', value: 'miscelleneous' },
+  { label: 'Education', value: 'Education' },
+  { label: 'Food', value: 'Food' },
+  { label: 'Medical', value: 'Medical' },
+  { label: 'Rent', value: 'Rent' },
+  { label: 'Social Event', value: 'Social Event' },
+  { label: 'Shopping', value: 'Shopping' },
+  { label: 'Miscelleneous', value: 'Miscelleneous' },
   
 ];
 
-const DropdownComponent = () => {
-  const [value, setValue] = useState(null);
+const DropdownComponent = ({category,setCategory}) => {
+
   const [isFocus, setIsFocus] = useState(false);
 
 
@@ -34,13 +34,13 @@ const DropdownComponent = () => {
         itemTextStyle={{color:"#9ca3af"}}
         labelField="label"
         valueField="value"
-        placeholder={!isFocus ? 'Category' : '...'}
+        // placeholder={!isFocus ? 'Category' : '...'}
         searchPlaceholder="Search..."
-        value={value}
+        value={category}
         onFocus={() => setIsFocus(true)}
         onBlur={() => setIsFocus(false)}
         onChange={item => {
-          setValue(item.value);
+          setCategory(item.value);
           setIsFocus(false);
         }}
 

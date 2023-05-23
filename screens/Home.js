@@ -1,5 +1,5 @@
 import { View, Text, TouchableOpacity,ScrollView,Modal, TextInput, Image } from 'react-native'
-import React, {useState}  from 'react'
+import React, {useState, useEffect}  from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'
@@ -11,12 +11,123 @@ import Expense from '../partials/Expense'
 import DropdownComponent from '../partials/DropdownComponent'
 import DatePicker from '../partials/DatePicker'
 import LinearGradient from 'react-native-linear-gradient';
+import { useAuthContext } from '../hooks/useAuthContext'
+import { useExpenseContext } from '../context/ExpenseContext'
 
 const Home = ({navigation}) => {
+  //getting data from Context
+  const {user}=useAuthContext()
+  const { selfExpenses, setSelfExpenses,groups, setGroups } = useExpenseContext()
+  
+  //group modal
   const [active , setactive] = useState(false);
+
+  //expense modal
   const [expactive , setexpactive] = useState(false);
 
+  //expense states
+  const [error, setError] = useState(null)
+  const [amount, setAmount] = useState('0');
+  const [title, setTitle] = useState("");
+  const [category, setCategory] = useState("General");
+  let today = new Date()
+  let currDate = today.getDate() + '-' + parseInt(today.getMonth() + 1) + '-' +today.getFullYear() 
+  const [date, setDate] = useState(currDate)
 
+
+    // //refresh every time there is a change in expenses
+    useEffect(()=>{
+      const fetchSelfExpenses = async () => {
+        const response = await fetch('http://10.0.2.2:4000/dashboard', {
+          headers: {'Authorization': `Bearer ${user.token}`},
+        })
+        const json = await response.json()
+  
+        if (response.ok) {
+          setSelfExpenses(json)
+        }
+      }
+  
+      const fetchGroups = async () => {
+        const response = await fetch('http://10.0.2.2:4000/dashboard/groups',{
+          headers:{
+            'Authorization':`Bearer ${user.token}`
+          }
+        })
+  
+        const json = await response.json()
+  
+        if(response.ok){
+          setGroups(json)
+        }
+      }
+    
+  
+      if (user) {
+        fetchSelfExpenses()
+        fetchGroups()
+      }
+  
+  },[user,setSelfExpenses,setGroups])
+
+  //Add expense
+  const handleSubmit= async()=>{
+    // e.preventDefault()
+    if (!user) {
+      setError('You must be logged in')
+      return
+    }
+
+    const expense = {title,amount,category,date}
+
+    const response = await fetch('http://10.0.2.2:4000/dashboard', {
+      method: 'POST',
+      body: JSON.stringify(expense),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${user.token}`
+      }
+    })
+    const json = await response.json()
+
+    if (!response.ok) {
+      setError(json.error)
+      
+    }
+    if (response.ok) {
+     // const expenseId= (Math.random() + 1).toString(36).substring(2);
+      setSelfExpenses([...selfExpenses,json])
+      setAmount('0')
+      setTitle('')
+      setCategory("General")
+      setDate(currDate)
+      setError(null)
+      setexpactive(false)
+     }
+    }
+  
+  //delete a expense
+  const deleteSelfExpense= async (_id)=>{
+    if(!user){
+        setError('You must be logged in')
+          return
+        }
+
+    const response = await fetch('http://10.0.2.2:4000/dashboard/'+_id,{
+      method:'DELETE',
+      headers:{
+        'Authorization': `Bearer ${user.token}`
+      }
+    })
+
+    const json = await response.json()
+
+    if(response.ok){
+      const newExpenses=selfExpenses.filter(expense=> expense._id !== json._id )
+      setSelfExpenses(newExpenses)
+    }
+    
+  }
 
   return (
 
@@ -30,7 +141,7 @@ const Home = ({navigation}) => {
             source={require('../assets/user3.png')}
             style={{height: 55, width: 55}}
           />
-            <Text style={{color:"white",marginTop:12, fontSize:20, marginLeft:5,fontFamily:"Roboto-Medium",}}>Hi, Dipankar!</Text>
+            <Text style={{color:"white",marginTop:12, fontSize:20, marginLeft:5,fontFamily:"Roboto-Medium",}}>Hi, {user && user.user.username}</Text>
           </View>
       
             <TouchableOpacity
@@ -55,6 +166,7 @@ const Home = ({navigation}) => {
              </Text>
         </LinearGradient>
         {/*Total Expensea! end */}
+        {/* group modal */}
         <Modal
           animationType="slide"
           transparent={true}
@@ -69,7 +181,7 @@ const Home = ({navigation}) => {
                             justifyContent: 'center',}}>
             <View  style={ {
                         backgroundColor : "black" ,
-                        height :'35%' ,
+                        height :300 ,
                         minWidth:'90%',
                         borderRadius : 15,
                         alignItems : "center",
@@ -97,43 +209,43 @@ const Home = ({navigation}) => {
                <DropdownComponent />
                 </View>           
 
-        <View style={{flex:0,flexDirection:'row',marginTop:20}}>
-                   <TouchableOpacity
-                         style={{
-                          backgroundColor: '#492d33',
-                          padding: 15,
-                          borderRadius: 10,
-                          marginBottom: 30,
-                          width:'25%',
-                          marginTop:5,
-                          marginRight:10
-                        }}
-                          onPress={()=>{setactive(!active)}}>
-                            <Text style={ {
-                                    textAlign: 'center',
-                                    fontWeight: '700',
-                                    fontSize: 16,
-                                    color: '#fff',
-                        }}>Cancel</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                         style={{
-                          backgroundColor: '#d7261b',
-                          padding: 15,
-                          borderRadius: 10,
-                          marginBottom: 30,
-                          width:'40%',
-                          marginTop:5
-                        }}
-                          onPress={()=>{setactive(!active)}}>
-                            <Text style={ {
-                                    textAlign: 'center',
-                                    fontWeight: '700',
-                                    fontSize: 16,
-                                    color: '#fff',
-                        }}>Add Group</Text>
-                  </TouchableOpacity>
-        </View>
+                  <View style={{flex:0,flexDirection:'row',marginTop:20}}>
+                            <TouchableOpacity
+                                  style={{
+                                    backgroundColor: '#492d33',
+                                    padding: 15,
+                                    borderRadius: 10,
+                                    marginBottom: 30,
+                                    width:'25%',
+                                    marginTop:5,
+                                    marginRight:10
+                                  }}
+                                    onPress={()=>{setactive(!active)}}>
+                                      <Text style={ {
+                                              textAlign: 'center',
+                                              fontWeight: '700',
+                                              fontSize: 16,
+                                              color: '#fff',
+                                  }}>Cancel</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                  style={{
+                                    backgroundColor: '#d7261b',
+                                    padding: 15,
+                                    borderRadius: 10,
+                                    marginBottom: 30,
+                                    width:'40%',
+                                    marginTop:5
+                                  }}
+                                    onPress={()=>{setactive(!active)}}>
+                                      <Text style={ {
+                                              textAlign: 'center',
+                                              fontWeight: '700',
+                                              fontSize: 16,
+                                              color: '#fff',
+                                  }}>Add Group</Text>
+                            </TouchableOpacity>
+                  </View>
 
             </View>
           </View>
@@ -169,8 +281,9 @@ const Home = ({navigation}) => {
          {/*Personal Expenses start */}
         <View style={{flex:0,flexDirection:'column',marginTop:3,maxHeight:320}}>
           <ScrollView>
-            <Expense iname="fast-food-outline" name="Expense" date="20-05-2023" amount={199}/>
-            <Expense iname="medical-outline" name="Blood Test" date="10-05-2023" amount={499}/>
+          {selfExpenses.length>0 && selfExpenses.map((exp)=><Expense deleteSelfExpense={deleteSelfExpense}  key={exp._id} expenseData={exp}/>)}
+            {/* <Expense iname="fast-food-outline" name="Expense" date="20-05-2023" amount={199}/> */}
+            {/* <Expense iname="medical-outline" name="Blood Test" date="10-05-2023" amount={499}/> */}
           </ScrollView>
         </View>
          {/*Personal Expenses END */}
@@ -204,6 +317,7 @@ const Home = ({navigation}) => {
       </View>
      {/*Add Expense END*/}
 
+      {/* expense modal */}
      <Modal
           animationType="slide"
           transparent={true}
@@ -240,7 +354,10 @@ const Home = ({navigation}) => {
                                 color="#9ca3af"
                                 style={{marginRight: 5}}
                               />
-                              <TextInput   placeholderTextColor={"#9ca3af"} placeholder='Enter the amount'  style={{paddingVertical:0, color:"white",minWidth:'75%'}}/>
+                              <TextInput   placeholderTextColor={"#9ca3af"} placeholder='Enter the amount'
+                                           value={amount} onChangeText={(txt)=>{setAmount(txt)}}
+                                           keyboardType={'numeric'}
+                                            style={{paddingVertical:0, color:"white",minWidth:'75%'}}/>
                           </View>
 
                           <View className=' border-solid border-2 w-full border-b-gray-400 mt-3'  style={{flexDirection:"row"}}>
@@ -250,12 +367,14 @@ const Home = ({navigation}) => {
                                 color="#9ca3af"
                                 style={{marginRight: 5}}
                               />
-                              <TextInput   placeholderTextColor={"#9ca3af"} placeholder='what was this expense for?'  style={{paddingVertical:0, color:"white",minWidth:'75%'}}/>
+                              <TextInput   placeholderTextColor={"#9ca3af"} placeholder='what was this expense for?'
+                                           value={title} onChangeText={(txt)=>{setTitle(txt)}}
+                                            style={{paddingVertical:0, color:"white",minWidth:'75%'}}/>
                           </View>
 
                           <View style={{flex:0,flexDirection:"row",width:"73%"}}>
                             <View>
-                            <DropdownComponent/>
+                            <DropdownComponent category={category} setCategory={setCategory}/>
                             </View>
 
                               <View className='border-solid border-2 border-b-gray-400 mt-3 ml-3'  style={{flexDirection:"row"}}>
@@ -266,50 +385,57 @@ const Home = ({navigation}) => {
                                     style={{marginRight: 5}}
                                   />
                                   <View style={{paddingTop:5}}>
-                                   <DatePicker/>
+                                   <DatePicker date={date}
+                                              setDate={setDate}/>
                                   </View>
                                  
                               </View>
                           </View>
 
                         
-        <View style={{flex:0,flexDirection:'row',marginTop:35}}>
-                   <TouchableOpacity
-                         style={{
-                          backgroundColor: '#492d33',
-                          padding: 15,
-                          borderRadius: 10,
-                          marginBottom: 30,
-                          width:'25%',
-                          marginTop:5,
-                          marginRight:10
-                        }}
-                          onPress={()=>{setexpactive(!expactive)}}>
-                            <Text style={ {
-                                    textAlign: 'center',
-                                    fontWeight: '700',
-                                    fontSize: 16,
-                                    color: '#fff',
-                        }}>Cancel</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                         style={{
-                          backgroundColor: '#d7261b',
-                          padding: 15,
-                          borderRadius: 10,
-                          marginBottom: 30,
-                          width:'40%',
-                          marginTop:5
-                        }}
-                          onPress={()=>{setexpactive(!expactive)}}>
-                            <Text style={ {
-                                    textAlign: 'center',
-                                    fontWeight: '700',
-                                    fontSize: 16,
-                                    color: '#fff',
-                        }}>Add Expense</Text>
-                  </TouchableOpacity>
-        </View>
+                  <View style={{flex:0,flexDirection:'row',marginTop:35}}>
+                      <TouchableOpacity
+                            style={{
+                              backgroundColor: '#492d33',
+                              padding: 15,
+                              borderRadius: 10,
+                              marginBottom: 30,
+                              width:'25%',
+                              marginTop:5,
+                              marginRight:10
+                            }}
+                              onPress={()=>{setexpactive(!expactive)
+                                            setError(null)}}>
+                                <Text style={ {
+                                        textAlign: 'center',
+                                        fontWeight: '700',
+                                        fontSize: 16,
+                                        color: '#fff',
+                            }}>Cancel</Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity
+                            style={{
+                              backgroundColor: '#d7261b',
+                              padding: 15,
+                              borderRadius: 10,
+                              marginBottom: 30,
+                              width:'40%',
+                              marginTop:5
+                            }}
+                              onPress={handleSubmit}>
+                                <Text style={ {
+                                        textAlign: 'center',
+                                        fontWeight: '700',
+                                        fontSize: 16,
+                                        color: '#fff',
+                            }}>Add Expense</Text>
+                      </TouchableOpacity>
+                      {error && 
+                          // <View style={{borderColor:"red",borderRadius:7,borderWidth:4,padding:10}}>
+                            <Text style={{color:"red",fontSize:18,textAlign:"center"}}>{error}</Text>
+                          // </View>
+                      }
+              </View>
             </View>
           </View>
         </Modal>

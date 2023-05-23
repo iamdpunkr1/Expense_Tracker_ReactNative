@@ -13,14 +13,18 @@ import {
 import { useNavigation } from '@react-navigation/native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
-
+import { useLogout } from '../hooks/useLogout';
 const CustomDrawer = (props) => {
 
   const navigation = useNavigation();
 
-  const goToStackScreen = () => {
+  const {logout} = useLogout()
+
+  const handleClick = () =>{
+    logout()
     navigation.navigate('Login');
-  };
+  }
+
 
   return (
     <View style={{flex: 1}}>
@@ -74,7 +78,7 @@ const CustomDrawer = (props) => {
             </Text>
           </View>
         </TouchableOpacity>
-        <TouchableOpacity onPress={goToStackScreen} style={{paddingVertical: 15}}>
+        <TouchableOpacity onPress={handleClick} style={{paddingVertical: 15}}>
           <View style={{flexDirection: 'row', alignItems: 'center'}}>
             <Ionicons name="exit-outline" size={22} />
             <Text

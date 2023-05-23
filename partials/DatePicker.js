@@ -2,9 +2,13 @@ import React, { useState } from "react";
 import { Text, View, TouchableOpacity } from "react-native";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 
-const DatePicker = () => {
+const DatePicker = ({date, setDate}) => {
+
+  let today = new Date()
+  let currDate = today.getDate() + '-' + parseInt(today.getMonth() + 1) + '-' +today.getFullYear() 
+
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
-  const [selectedDate, setSelectedDate] = useState('Select Date')
+
 
   const showDatePicker = () => {
     setDatePickerVisibility(true);
@@ -20,8 +24,8 @@ const DatePicker = () => {
     const x= dt.toISOString().split('T')
     const x1=x[0].split('-')
     const actualDate=x1[2]+"-"+x1[1]+"-"+x1[0]
-    setSelectedDate(actualDate)
-    console.warn("A date has been picked: ", actualDate);
+    setDate(actualDate)
+    // console.warn("A date has been picked: ", actualDate);
     hideDatePicker();
   };
 
@@ -39,7 +43,7 @@ const DatePicker = () => {
             textAlign: 'center',
             color: '#9ca3af',
             fontSize:16
-        }}>{selectedDate}</Text>
+        }}>{date}</Text>
       </TouchableOpacity>
 
       <DateTimePickerModal
@@ -47,6 +51,7 @@ const DatePicker = () => {
         mode="date"
         onConfirm={handleConfirm}
         onCancel={hideDatePicker}
+        
       />
     </View>
   );

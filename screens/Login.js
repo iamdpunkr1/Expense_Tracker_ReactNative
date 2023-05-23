@@ -1,9 +1,19 @@
-import React from 'react'
+import React,{useState} from 'react'
 import {SafeAreaView, Text, View ,Image, TextInput, Button, TouchableOpacity} from 'react-native'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
-
-
+import { useLogin } from '../hooks/useLogin'
+import { useAuthContext } from '../hooks/useAuthContext'
 const Login = ({navigation}) => {
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const {login, error, isLoading} = useLogin()
+  
+  const handleSubmit = async()=>{
+    // e.preventDefault()
+
+    await login(email,password,navigation)
+
+  }
   return (
     <SafeAreaView style={{flex:1,justifyContent:"center", backgroundColor:"#0d0f14"}} >
       
@@ -21,7 +31,7 @@ const Login = ({navigation}) => {
             color="#9ca3af"
             style={{marginRight: 5}}
           />
-          <TextInput   placeholderTextColor={"#9ca3af"} placeholder='Email ID' keyboardType='email-address'  style={{paddingVertical:0, color:"white"}}/>
+          <TextInput  value={email} onChangeText={(text)=>{setEmail(text)}}     placeholderTextColor={"#9ca3af"} placeholder='Email ID' keyboardType='email-address'  style={{paddingVertical:0, color:"white"}}/>
         </View>
 
         <View  className="border-solid border-2 border-b-gray-400 mb-5 mt-5" style={{flexDirection:"row"}}>
@@ -31,10 +41,10 @@ const Login = ({navigation}) => {
             color="#9ca3af"
             style={{marginRight: 5}}
           />
-        <TextInput   placeholder='Password' placeholderTextColor={"#9ca3af"} secureTextEntry={true} style={{paddingVertical:0, color:"white"}}/>
+        <TextInput   value={password} onChangeText={(text)=>{setPassword(text)}}    placeholder='Password' placeholderTextColor={"#9ca3af"} secureTextEntry={true} style={{paddingVertical:0, color:"white"}}/>
         </View>
         <TouchableOpacity
-        onPress={()=>{navigation.navigate("DrawerNavigator")}}
+        onPress={handleSubmit}
        style={{
         backgroundColor: '#d7261b',
         padding: 15,
@@ -52,12 +62,16 @@ const Login = ({navigation}) => {
       Login
       </Text>
     </TouchableOpacity>
-
+    {error && 
+        // <View style={{borderColor:"red",borderRadius:7,borderWidth:4,padding:10}}>
+           <Text style={{color:"red",fontSize:18,textAlign:"center"}}>{error}</Text>
+        // </View>
+    }
         <View className='flex mt-5' style={{flexDirection:"row", alignItems:"center",justifyContent:"center"}}> 
-        <Text style={{color:"white",fontFamily:"Roboto-Medium", marginRight:10}}>
+        <Text style={{color:"white",fontSize:16, marginRight:10}}>
             Don't have a account?
         </Text>
-        <TouchableOpacity onPress={()=>{navigation.navigate('Register')}}>
+        <TouchableOpacity onPress={()=>{navigation.push('Register')}}>
           <Text className='font-bold' style={{color:"#e44816",fontSize:16 }}>
             Register
           </Text>

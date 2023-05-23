@@ -3,14 +3,20 @@ import Login from '../screens/Login'
 import Register from '../screens/Register'
 import React from 'react'
 import DrawerNavigator from './DrawerNavigator'
+import { useAuthContext } from '../hooks/useAuthContext';
+
 const Stack = createNativeStackNavigator()
 
 const Authstack = () => {
+  const {user} = useAuthContext()
   return (
-    <Stack.Navigator>
-        <Stack.Screen name="Login" component={Login} options={{headerShown:false}}/>
-        <Stack.Screen name="Register" component={Register}  options={{headerShown:false}}/>
-        <Stack.Screen name="DrawerNavigator" component={DrawerNavigator}  options={{headerShown:false}}/>
+    <Stack.Navigator initialRouteName={user==null ? "Login" : "DrawerNavigator"} screenOptions={{
+                                    headerShown:false , 
+                                    animationTypeForReplace:'push',
+                                    animation:'simple_push'}} >
+        <Stack.Screen name="Login" component={Login} />
+        <Stack.Screen name="Register" component={Register} />
+        <Stack.Screen name="DrawerNavigator" component={DrawerNavigator} />
     </Stack.Navigator>
   )
 }
