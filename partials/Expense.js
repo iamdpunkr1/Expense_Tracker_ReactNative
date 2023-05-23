@@ -34,8 +34,8 @@ const Expense = ({expenseData, deleteSelfExpense}) => {
     case 'Miscelleneous': iname="list"
                       break;
     default: iname='list'
-      break;         
-                  }
+              break;         
+        }
   return (
     <View style={{flex:0,flexDirection:'row',justifyContent:'space-between',borderColor:"#9ca3af",borderRadius:5,borderStyle:'solid',borderWidth:2,padding:4, marginTop:4}}>
         <View style={{flex:0,flexDirection:'row',marginLeft:7}}>

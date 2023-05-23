@@ -30,11 +30,13 @@ const Home = ({navigation}) => {
   const [amount, setAmount] = useState('0');
   const [title, setTitle] = useState("");
   const [category, setCategory] = useState("General");
+  //date
   let today = new Date()
   let currDate = today.getDate() + '-' + parseInt(today.getMonth() + 1) + '-' +today.getFullYear() 
   const [date, setDate] = useState(currDate)
-
-
+  //group states
+  const [groupTitle, setGroupTitle] = useState("");
+  const [groupCategory, setGroupCategory] = useState("General");
     // //refresh every time there is a change in expenses
     useEffect(()=>{
       const fetchSelfExpenses = async () => {
@@ -129,6 +131,33 @@ const Home = ({navigation}) => {
     
   }
 
+  //create groups
+  const addGroup= async()=>{ 
+    // e.preventDefault()
+    if(!user){
+      setError("You must be logged in")
+    }
+    const group={groupTitle, groupCategory,amount:0,createdBy:user.user.username,members:[{memberName:user.user.username, memberEmail:user.user.email, groupBalance:0}],groupExpenses:[]}
+    const response = await fetch('http://10.0.2.2:4000/dashboard/groups',{
+      method:'POST',
+      body:JSON.stringify(group),
+      headers:{
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${user.token}`
+      }
+    })
+
+    const json = await response.json()
+    if(response.ok){
+          setGroups([...groups,json]) 
+          setGroupTitle('')
+          setGroupCategory("General")
+          setDate(currDate)
+          setError(null)
+          setactive(false)
+    }
+
+  }
   return (
 
     <SafeAreaView style={{flex:1, backgroundColor:"#0d0f14"}}>
@@ -172,7 +201,7 @@ const Home = ({navigation}) => {
           transparent={true}
           visible={active}
           onRequestClose={() => {
-            console.warn("closed");
+            // console.warn("closed");
           }}
           >
           <View style={{    flex: 1,
@@ -203,10 +232,12 @@ const Home = ({navigation}) => {
                               color="#9ca3af"
                               style={{marginRight: 5}}
                             />
-                            <TextInput   placeholderTextColor={"#9ca3af"} placeholder='Enter the group name'  style={{paddingVertical:0, color:"white",minWidth:'75%'}}/>
+                            <TextInput   placeholderTextColor={"#9ca3af"} placeholder='Enter the group name'
+                                          value={groupTitle} onChangeText={(txt)=>{setGroupTitle(txt)}}
+                                          style={{paddingVertical:0, color:"white",minWidth:'75%'}}/>
                           </View>
                <View style={{flex:0,width:"90%"}}>
-               <DropdownComponent />
+               <DropdownComponent  category={groupCategory} setCategory={setGroupCategory}/>
                 </View>           
 
                   <View style={{flex:0,flexDirection:'row',marginTop:20}}>
@@ -220,7 +251,8 @@ const Home = ({navigation}) => {
                                     marginTop:5,
                                     marginRight:10
                                   }}
-                                    onPress={()=>{setactive(!active)}}>
+                                    onPress={()=>{setactive(!active)
+                                                  setError(null)}}>
                                       <Text style={ {
                                               textAlign: 'center',
                                               fontWeight: '700',
@@ -237,7 +269,7 @@ const Home = ({navigation}) => {
                                     width:'40%',
                                     marginTop:5
                                   }}
-                                    onPress={()=>{setactive(!active)}}>
+                                    onPress={addGroup}>
                                       <Text style={ {
                                               textAlign: 'center',
                                               fontWeight: '700',
@@ -264,8 +296,9 @@ const Home = ({navigation}) => {
         {/*Groups Boxes start */}
         <ScrollView horizontal={true} className=' h-32'>
           <View  style={{flex:0,flexDirection:'row' ,justifyContent:'space-evenly',alignContent:'space-between', marginTop:6,}}>
-            <DashGroup iname="shopping-basket" name="Ration" amount={1500} nav={navigation}/>
-            <DashGroup iname="restroom" name="Rent" amount={3300} nav={navigation}/>
+          {groups.length>0 && groups.map((grp)=><DashGroup groupData={grp} nav={navigation} key={grp._id}  />)} 
+            {/* <DashGroup iname="shopping-basket" name="Ration" amount={1500} nav={navigation}/>
+            <DashGroup iname="restroom" name="Rent" amount={3300} nav={navigation}/> */}
           </View>
         </ScrollView>
         {/*Groups Boxes end */}

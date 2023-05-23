@@ -46,14 +46,14 @@ const Tabs = ({groupExpenses, balance}) => {
     
 
           <ScrollView  style={{marginTop:10}}>
-            {groupExpenses.map((data,index)=>{ return (<Expense key={index}  iname={data.iname} name={data.name} date={data.date} amount={data.amount}/>);})}
+            {/* {groupExpenses.map((data,index)=>{ return (<Expense key={index}  iname={data.iname} name={data.name} date={data.date} amount={data.amount}/>);})} */}
           </ScrollView>
 
     
       )}
       {activeTab === 1 && (
         <View style={{marginTop:10}}>
-          {balance.map((data,index)=>{return (<Balance key={index} userName={data.userName} amount={data.amount}/>)})}
+          {/* {balance.map((data,index)=>{return (<Balance key={index} userName={data.userName} amount={data.amount}/>)})} */}
         </View>
       )}
 

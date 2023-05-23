@@ -34,7 +34,7 @@ const DropdownComponent = ({category,setCategory}) => {
         itemTextStyle={{color:"#9ca3af"}}
         labelField="label"
         valueField="value"
-        // placeholder={!isFocus ? 'Category' : '...'}
+        placeholder={!isFocus ? 'Category' : '...'}
         searchPlaceholder="Search..."
         value={category}
         onFocus={() => setIsFocus(true)}
