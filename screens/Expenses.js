@@ -47,8 +47,8 @@ const Expenses = ({navigation}) => {
           {/*Personal Expenses start */}
         <View style={{flex:0,flexDirection:'column',marginTop:30,maxHeight:320}}>
           <ScrollView>
-            <Expense iname="fast-food-outline" name="Expense" date="20-05-2023" amount={199}/>
-            <Expense iname="medical-outline" name="Blood Test" date="10-05-2023" amount={499}/>
+            {/* <Expense iname="fast-food-outline" name="Expense" date="20-05-2023" amount={199}/>
+            <Expense iname="medical-outline" name="Blood Test" date="10-05-2023" amount={499}/> */}
           </ScrollView>
         </View>
          {/*Personal Expenses END */}

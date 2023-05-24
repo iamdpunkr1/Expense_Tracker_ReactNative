@@ -5,7 +5,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'
 const DashGroup = ({groupData, nav}) => {
   
-  const {groupTitle, groupCategory,amount}=groupData 
+  const {groupTitle, groupCategory,amount,_id}=groupData 
 
   let iname=''
   switch(groupCategory){
@@ -35,7 +35,7 @@ const DashGroup = ({groupData, nav}) => {
               break;         
         }
   return (
-    <TouchableOpacity onPress={()=>{nav.navigate("GroupInfo")}}>
+    <TouchableOpacity onPress={()=>{nav.navigate("GroupInfo",{id:_id})}}>
     <LinearGradient colors={['#52545b','#595b62']} style={{justifyContent:'center',alignItems:'center',borderRadius:6,height:112,width:112,marginTop:8,marginRight:8,borderColor:"#2e2f33",borderWidth:4}}>
       
           <Ionicons name={iname} size={30} color="#0d0f14" /> 
