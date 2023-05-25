@@ -2,7 +2,7 @@ import { View, Text, SafeAreaView, TouchableOpacity, Modal, TextInput, ScrollVie
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
-import React, {useState} from 'react'
+import React, {useState,useEffect} from 'react'
 import Tabs from '../partials/Tabs'
 import { FloatingAction } from "react-native-floating-action";
 import DatePicker from '../partials/DatePicker'
@@ -40,16 +40,50 @@ const GroupInfo = ({navigation,route}) => {
   };
 
   //remove Member
-  const deleteMember=(mEmail)=>{
-    const members= groupData[0].members.filter(m=>{
+  const deleteMember=async(mEmail)=>{
+    if(!user){
+      setError("You must be logged in")
+     }
+     
+    //checking groupBalance has no -negative balance
+    const isRemovable = groupData[0].members.filter(m=>{
       if(m.memberEmail===mEmail){
         if(m.groupBalance>=0){
-          return ''
+          return true
         }else{
-          return m
+          return false
         }
-    }else{ return m}
-  })
+      }else{ return false}
+     })
+
+     if(isRemovable){
+      const response = await fetch('http://10.0.2.2:4000/dashboard/groups/members/'+id,{
+        method:'PATCH',
+        body:JSON.stringify({mEmail}),
+        headers:{
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${user.token}`
+        }
+      })
+  
+      const json = await response.json()
+      if(!response.ok){
+        setError(json.error)
+      }
+      if(response.ok){
+        setGroups(groups.map(group=>{
+          if(group._id===id){
+            return {...group, json}
+          }else{
+            return group
+          }
+        }))
+       
+        setError(null)
+      }
+     }else{
+      setError("User has Dues left")
+     }    
 
   }
 
@@ -93,29 +127,30 @@ const GroupInfo = ({navigation,route}) => {
   }
 
   //fetch the single group
-  // useEffect(()=>{
-  //   const fetchGroupData = async () => {
-  //     const response = await fetch('/groups/'+id,{
-  //       headers:{
-  //         'Authorization':`Bearer ${user.token}`
-  //       }
-  //     })
+  useEffect(()=>{
+    console.log("useEffect called")
+    const fetchGroupData = async () => {
+      const response = await fetch('http://10.0.2.2:4000/groups/'+id,{
+        headers:{
+          'Authorization':`Bearer ${user.token}`
+        }
+      })
 
-  //     const json = await response.json()
+      const json = await response.json()
 
-  //     if(response.ok){
-  //       // console.log("from Group Menu ",json)
-  //       setGroupData([json])
-  //     }
-  //   }
+      if(response.ok){
+        // console.log("from Group Menu ",json)
+        setGroupData([json])
+      }
+    }
   
 
-  //   if (user) {
+    if (user) {
 
-  //     fetchGroupData()
-  //   }
+      fetchGroupData()
+    }
   //   // setGroupData(groups.filter(group=>group._id===id))
-  // },[groups,setGroupData,id,user])
+  },[groups])
 
   const groupExpenses=[
     {
@@ -195,7 +230,11 @@ const GroupInfo = ({navigation,route}) => {
              <Text  style={{color:"white", fontSize:16, marginLeft:5,fontFamily:"Roboto-Medium",}}>Created by: You</Text>
         </LinearGradient>
         {/*Group Info! end */}
-
+        {error && 
+        // <View style={{borderColor:"red",borderRadius:7,borderWidth:4,padding:10}}>
+           <Text style={{color:"red",fontSize:18,textAlign:"center"}}>{error}</Text>
+        // </View>
+         }
         {/* members */}
          <View style={{flex:0,flexDirection:'row'}}>
          {groupData[0].members.length>0 && groupData[0].members.map((member,idx)=>{ if(idx===0){
