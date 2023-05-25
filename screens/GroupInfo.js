@@ -38,7 +38,39 @@ const GroupInfo = ({navigation,route}) => {
   const handleTabPress = (tabIndex) => {
     setActiveTab(tabIndex);
   };
+ 
+  const [shares,setShares] = useState(groupData[0].members.map((member) => {
+    return { ...member, share: 1 };
+  }))
 
+  //fetch the single group
+  useEffect(()=>{
+    console.log("useEffect called")
+    const fetchGroupData = async () => {
+      const response = await fetch('http://10.0.2.2:4000/groups/'+id,{
+        headers:{
+          'Authorization':`Bearer ${user.token}`
+        }
+      })
+
+      const json = await response.json()
+
+      if(response.ok){
+        // console.log("from Group Menu ",json)
+        setGroupData([json])
+
+      }
+    }
+  
+
+    if (user) {
+
+      fetchGroupData()
+    }
+
+  },[groups])
+
+  // console.log("Shares " ,shares)
   //remove Member
   const deleteMember=async(mEmail)=>{
     if(!user){
@@ -126,31 +158,55 @@ const GroupInfo = ({navigation,route}) => {
     }
   }
 
-  //fetch the single group
-  useEffect(()=>{
-    console.log("useEffect called")
-    const fetchGroupData = async () => {
-      const response = await fetch('http://10.0.2.2:4000/groups/'+id,{
-        headers:{
-          'Authorization':`Bearer ${user.token}`
-        }
-      })
 
-      const json = await response.json()
+ //Add expense
+//  const handleSubmit=async()=>{
 
-      if(response.ok){
-        // console.log("from Group Menu ",json)
-        setGroupData([json])
-      }
-    }
+//   let temp=groupData
+//   const newExpense = {
+//     amount:temp[0].amount+parseInt(currAmount),
+//     groupExpenses:[...temp[0].groupExpenses,{
+//                                               title,category,
+//                                               date,amount:parseInt(currAmount),
+//                                             }],
+//     members:temp[0].members.map(member=> {return {...member,groupBalance:member.groupBalance+currAmount/temp[0].members.length}})
+//   }
+
+//     console.log('from updated Group:',newExpense)
+//     if(!user){
+//       console.log("You must be logged in")
+//      }
+//      const response = await fetch('http://10.0.2.2:4000/dashboard/groups/expense/'+id,{
+//        method:'PATCH',
+//        body:JSON.stringify(newExpense),
+//        headers:{
+//          'Content-Type': 'application/json',
+//          'Authorization': `Bearer ${user.token}`
+//        }
+//      })
+ 
+//      const json = await response.json()
+//      if(response.ok){
+//       setGroups(groups.map(group=>{
+//         if(group._id===id){
+//           return {...group, json }
+//                       }else{
+//           return group
+//         }
+//       }))
   
+//       setAmount(0)
+//       setTitle('')
+//       setCategory("General")
+//       setDate(currDate)
+//       handleClose()
+  
+//      }
 
-    if (user) {
+// }
 
-      fetchGroupData()
-    }
-  //   // setGroupData(groups.filter(group=>group._id===id))
-  },[groups])
+
+
 
   const groupExpenses=[
     {
@@ -283,7 +339,7 @@ const GroupInfo = ({navigation,route}) => {
                             justifyContent: 'center',}}>
             <View  style={ {
                         backgroundColor : "black" ,
-                        height :'35%' ,
+                        height :340 ,
                         minWidth:'90%',
                         borderRadius : 15,
                         alignItems : "center",
@@ -358,13 +414,13 @@ const GroupInfo = ({navigation,route}) => {
           </View>
         </Modal>
 
-
+        {/* add group expense */}
         <Modal
           animationType="slide"
           transparent={true}
           visible={expactive}
           onRequestClose={() => {
-            console.warn("closed");
+            // console.warn("closed");
           }}
           >
           <View style={{    flex: 1,
@@ -462,32 +518,39 @@ const GroupInfo = ({navigation,route}) => {
 
                             {activeTab === 0 && (
                               <View>
-                                <View style={{marginTop:10,flexDirection: 'row',justifyContent:"space-between",borderColor:"#cbc4c5",borderWidth:2,borderRadius:5,padding:10}}>
-                                  <Text style={{color:"white"}}>Akash Chetia</Text>
-                                  <View>
-                                  <Text   style={{color:"#b5807f", fontSize:16,fontFamily:"Roboto-Medium", marginRight:10}}>
-                                    <FontAwesome5 name='rupee-sign' size={16} color="#b5807f"/> 500
-                                  </Text> 
-                                  </View>
-                                </View>
+                                {groupData[0].members.map(m=>{
+                                      return(
+                                        <View style={{marginTop:10,flexDirection: 'row',justifyContent:"space-between",borderColor:"#cbc4c5",borderWidth:2,borderRadius:5,padding:10}}>
+                                        <Text style={{color:"white"}}>{m.memberName}</Text>
+                                        <View>
+                                        <Text   style={{color:"#b5807f", fontSize:16,fontFamily:"Roboto-Medium", marginRight:10}}>
+                                          <FontAwesome5 name='rupee-sign' size={16} color="#b5807f"/> 500
+                                        </Text> 
+                                        </View>
+                                        </View>
+                                        )
+                                })}
 
-                                <View style={{marginTop:10,flexDirection: 'row',justifyContent:"space-between",borderColor:"#cbc4c5",borderWidth:2,borderRadius:5,padding:10}}>
+
+                                {/* <View style={{marginTop:10,flexDirection: 'row',justifyContent:"space-between",borderColor:"#cbc4c5",borderWidth:2,borderRadius:5,padding:10}}>
                                   <Text style={{color:"white"}}>Dipankar Prasad</Text>
                                   <View>
                                   <Text   style={{color:"#b5807f", fontSize:16,fontFamily:"Roboto-Medium", marginRight:10}}>
                                     <FontAwesome5 name='rupee-sign' size={16} color="#b5807f"/> 500
                                   </Text> 
                                   </View>
-                                </View>
+                                </View> */}
                               </View>
 
                           
                             )}
                             {activeTab === 1 && (
                               <View>
-                                <Share name="Akash Chetia" amount="500"/>
-                                <Share name="Dipankar Prasad" amount="500"/>
+                             {
+                                shares.map(m=>{return(<Share name={m.memberName} count={m.share} shares={shares} key={m._id} id={m._id} setShare={setShares} amount={500}/> )})}
 
+                               
+                                {/* <Share name="Dipankar Prasad" amount="500"/> */}
                             </View>
                             )}
 
