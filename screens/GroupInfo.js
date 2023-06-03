@@ -48,7 +48,7 @@ const GroupInfo = ({navigation,route}) => {
   };
  
   const [shares,setShares] = useState(groupData[0].members.map((member) => {
-    return { ...member, share: 1 };
+    return { ...member, share: 1};
   }))
 
   //fetch the single group
@@ -172,50 +172,89 @@ const GroupInfo = ({navigation,route}) => {
 
 
  //Add expense
-//  const handleSubmit=async()=>{
+ const handleSubmit=async()=>{
+  const value=(mEmail,sum)=>{
+    const [m]= shares.filter(m=>{if(m.memberEmail===mEmail){ return m}})
+ 
+      return ((amount / sum) * m.share)%1===0?parseInt((amount / sum) * m.share).toFixed(0):parseInt((amount / sum) * m.share).toFixed(1)
+ 
+    }
+  //   const sum = shares.reduce((acc, { share }) => acc + share, 0);
+  // console.log(24+ parseInt(value('test2@gmail.com',sum)))
+  let temp=groupData
+  let newExpense='';
+  if(activeTab===0){
+    // console.log("handle submit 1")
+    newExpense = {
+      amount:temp[0].amount+parseInt(amount),
+      groupExpenses:[...temp[0].groupExpenses,{
+                                                title,category,
+                                                date,amount:parseInt(amount),
+                                              }],
+      members:temp[0].members.map(member=> {return {...member,groupBalance:member.groupBalance+amount/temp[0].members.length}})
+    }
+  }else{
+   
+    const sum = shares.reduce((acc, { share }) => acc + share, 0);
 
-//   let temp=groupData
-//   const newExpense = {
-//     amount:temp[0].amount+parseInt(currAmount),
-//     groupExpenses:[...temp[0].groupExpenses,{
-//                                               title,category,
-//                                               date,amount:parseInt(currAmount),
-//                                             }],
-//     members:temp[0].members.map(member=> {return {...member,groupBalance:member.groupBalance+currAmount/temp[0].members.length}})
-//   }
+
+    newExpense = {
+      amount:temp[0].amount+parseInt(amount),
+      groupExpenses:[...temp[0].groupExpenses,{
+                                                title,
+                                                category,
+                                                date,
+                                                amount:parseInt(amount),
+                                                shares:shares
+                                              }],
+      members:temp[0].members.map(member=> {return {...member,groupBalance:member.groupBalance + parseInt(value(member.memberEmail, sum))}})
+    }
+  }
+ 
 
 //     console.log('from updated Group:',newExpense)
-//     if(!user){
-//       console.log("You must be logged in")
-//      }
-//      const response = await fetch('http://10.0.2.2:4000/dashboard/groups/expense/'+id,{
-//        method:'PATCH',
-//        body:JSON.stringify(newExpense),
-//        headers:{
-//          'Content-Type': 'application/json',
-//          'Authorization': `Bearer ${user.token}`
-//        }
-//      })
+    if(!user){
+      setError("You must be logged in")
+     }
+    
+     const response = await fetch('http://10.0.2.2:4000/dashboard/groups/expense/'+id,{
+       method:'PATCH',
+       body:JSON.stringify(newExpense),
+       headers:{
+         'Content-Type': 'application/json',
+         'Authorization': `Bearer ${user.token}`
+       }
+     })
  
-//      const json = await response.json()
-//      if(response.ok){
-//       setGroups(groups.map(group=>{
-//         if(group._id===id){
-//           return {...group, json }
-//                       }else{
-//           return group
-//         }
-//       }))
-  
-//       setAmount(0)
-//       setTitle('')
-//       setCategory("General")
-//       setDate(currDate)
-//       handleClose()
-  
-//      }
+     const json = await response.json()
 
-// }
+     if(!response.ok){
+      setError(json.error)
+      console.log("Not OK",json)
+     }
+
+
+
+     if(response.ok){
+      
+      setGroups(groups.map(group=>{
+        if(group._id===id){
+          return {...group, json }
+                      }else{
+          return group
+        }
+      }))
+  
+      setAmount(0)
+      setTitle('')
+      setCategory("General")
+      setDate(currDate)
+      setError(null)
+      setexpactive(false)
+  
+     }
+
+}
 
 
 
@@ -561,7 +600,11 @@ const GroupInfo = ({navigation,route}) => {
 
                           </View>
                           </View>
-                       
+                          {error && 
+                            // <View style={{borderColor:"red",borderRadius:7,borderWidth:4,padding:10}}>
+                              <Text style={{color:"red",fontSize:18,textAlign:"center"}}>{error}</Text>
+                            // </View>
+                        }
         <View style={{flex:0,flexDirection:'row',marginTop:35}}>
                    <TouchableOpacity
                          style={{
@@ -573,7 +616,8 @@ const GroupInfo = ({navigation,route}) => {
                           marginTop:5,
                           marginRight:10
                         }}
-                          onPress={()=>{setexpactive(!expactive)}}>
+                          onPress={()=>{setexpactive(!expactive)
+                                        setError(null)}}>
                             <Text style={ {
                                     textAlign: 'center',
                                     fontWeight: '700',
@@ -590,7 +634,7 @@ const GroupInfo = ({navigation,route}) => {
                           width:'40%',
                           marginTop:5
                         }}
-                          onPress={()=>{setexpactive(!expactive)}}>
+                          onPress={handleSubmit}>
                             <Text style={ {
                                     textAlign: 'center',
                                     fontWeight: '700',
