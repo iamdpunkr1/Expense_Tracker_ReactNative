@@ -44,8 +44,6 @@ const Share = ({ name, amount, shares, setShare, id, count }) => {
   
         return updatedData;
     })
-
-
   
   };
 
@@ -71,7 +69,7 @@ const Share = ({ name, amount, shares, setShare, id, count }) => {
       <View>
         <Text style={{ color: "#b5807f", fontSize: 16, fontFamily: "Roboto-Medium", marginRight: 10 }}>
           <FontAwesome5 name='rupee-sign' size={16} color="#b5807f" />
-          {(amount / total) * count}
+          {((amount / total) * count)%1===0?((amount / total) * count).toFixed(0):((amount / total) * count).toFixed(1)}
         </Text>
       </View>
     </View>

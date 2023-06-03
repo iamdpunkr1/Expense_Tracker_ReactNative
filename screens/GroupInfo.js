@@ -23,6 +23,14 @@ const GroupInfo = ({navigation,route}) => {
   //to show errors from databasse
   const [error,setError]=useState(null)
 
+  //add group expense states
+  const [amount, setAmount] = useState('0');
+  const [title, setTitle] = useState("");
+  const [category, setCategory] = useState("General");
+  //date
+  let today = new Date()
+  let currDate = today.getDate() + '-' + parseInt(today.getMonth() + 1) + '-' +today.getFullYear() 
+  const [date, setDate] = useState(currDate)
   //id of single group
   const { id } = route.params;
   const [groupData,setGroupData] = useState(groups.filter(group=>group._id===id))
@@ -58,13 +66,15 @@ const GroupInfo = ({navigation,route}) => {
       if(response.ok){
         // console.log("from Group Menu ",json)
         setGroupData([json])
-
+        setShares(json.members.map((member) => {
+          return { ...member, share: 1 };
+        }))
+      
       }
     }
   
 
     if (user) {
-
       fetchGroupData()
     }
 
@@ -110,7 +120,9 @@ const GroupInfo = ({navigation,route}) => {
             return group
           }
         }))
-       
+      //  setShares(groupData[0].members.map((member) => {
+      //     return { ...member, share: 1 };
+      //   }))
         setError(null)
       }
      }else{
@@ -153,7 +165,7 @@ const GroupInfo = ({navigation,route}) => {
       }))
       setMemberEmail('')
       setError(null)
-     
+      setGroupData(groups.filter(group=>group._id===id))
       // setMemberName('')
     }
   }
@@ -280,8 +292,8 @@ const GroupInfo = ({navigation,route}) => {
         {/*Back button End */} 
         {/*Group Info! start */}
         <LinearGradient colors={['#e44816','#d7261b']}   style={{backgroundColor:"#e44816",marginBottom:10}}   className='rounded-md h-28 w-full p-5 mt-2 text-center'>
-             <Text    className='font-bold mt-1 ' style={{fontFamily:"Roboto-Medium", color:"white",fontSize:30}}>
-                 Group: {groupData[0].groupTitle}
+             <Text    className='font-bold mt-1 ml-1' style={{fontFamily:"Roboto-Medium", color:"white",fontSize:30}}>
+                 {groupData[0].groupTitle}
              </Text>
              <Text  style={{color:"white", fontSize:16, marginLeft:5,fontFamily:"Roboto-Medium",}}>Created by: You</Text>
         </LinearGradient>
@@ -451,7 +463,7 @@ const GroupInfo = ({navigation,route}) => {
                                 color="#9ca3af"
                                 style={{marginRight: 5}}
                               />
-                              <TextInput   placeholderTextColor={"#9ca3af"} placeholder='Enter the amount'  style={{paddingVertical:0, color:"white",minWidth:'75%'}}/>
+                              <TextInput  value={amount} onChangeText={(txt)=>{setAmount(txt)}} keyboardType={'numeric'}  placeholderTextColor={"#9ca3af"} placeholder='Enter the amount'  style={{paddingVertical:0, color:"white",minWidth:'75%'}}/>
                           </View>
 
                           <View className=' border-solid border-2 w-full border-b-gray-400 mt-3'  style={{flexDirection:"row"}}>
@@ -461,12 +473,12 @@ const GroupInfo = ({navigation,route}) => {
                                 color="#9ca3af"
                                 style={{marginRight: 5}}
                               />
-                              <TextInput   placeholderTextColor={"#9ca3af"} placeholder='what was this expense for?'  style={{paddingVertical:0, color:"white",minWidth:'75%'}}/>
+                              <TextInput  value={title} onChangeText={(txt)=>{setTitle(txt)}}  placeholderTextColor={"#9ca3af"} placeholder='what was this expense for?'  style={{paddingVertical:0, color:"white",minWidth:'75%'}}/>
                           </View>
 
                           <View style={{flex:0,flexDirection:"row",width:"73%"}}>
                             <View>
-                            <DropdownComponent/>
+                            <DropdownComponent  category={category} setCategory={setCategory}/>
                             </View>
 
                               <View className='border-solid border-2 border-b-gray-400 mt-3 ml-3'  style={{flexDirection:"row"}}>
@@ -477,7 +489,8 @@ const GroupInfo = ({navigation,route}) => {
                                     style={{marginRight: 5}}
                                   />
                                   <View style={{paddingTop:5}}>
-                                   <DatePicker/>
+                                   <DatePicker  date={date}
+                                                setDate={setDate}/>
                                   </View>
                                  
                               </View>
@@ -520,11 +533,11 @@ const GroupInfo = ({navigation,route}) => {
                               <View>
                                 {groupData[0].members.map(m=>{
                                       return(
-                                        <View style={{marginTop:10,flexDirection: 'row',justifyContent:"space-between",borderColor:"#cbc4c5",borderWidth:2,borderRadius:5,padding:10}}>
+                                        <View key={m._id} style={{marginTop:10,flexDirection: 'row',justifyContent:"space-between",borderColor:"#cbc4c5",borderWidth:2,borderRadius:5,padding:10}}>
                                         <Text style={{color:"white"}}>{m.memberName}</Text>
                                         <View>
                                         <Text   style={{color:"#b5807f", fontSize:16,fontFamily:"Roboto-Medium", marginRight:10}}>
-                                          <FontAwesome5 name='rupee-sign' size={16} color="#b5807f"/> 500
+                                          <FontAwesome5 name='rupee-sign' size={16} color="#b5807f"/> {(amount/groupData[0].members.length)%1===0?(amount/groupData[0].members.length).toFixed(0):(amount/groupData[0].members.length).toFixed(1)}
                                         </Text> 
                                         </View>
                                         </View>
@@ -532,14 +545,6 @@ const GroupInfo = ({navigation,route}) => {
                                 })}
 
 
-                                {/* <View style={{marginTop:10,flexDirection: 'row',justifyContent:"space-between",borderColor:"#cbc4c5",borderWidth:2,borderRadius:5,padding:10}}>
-                                  <Text style={{color:"white"}}>Dipankar Prasad</Text>
-                                  <View>
-                                  <Text   style={{color:"#b5807f", fontSize:16,fontFamily:"Roboto-Medium", marginRight:10}}>
-                                    <FontAwesome5 name='rupee-sign' size={16} color="#b5807f"/> 500
-                                  </Text> 
-                                  </View>
-                                </View> */}
                               </View>
 
                           
@@ -547,7 +552,7 @@ const GroupInfo = ({navigation,route}) => {
                             {activeTab === 1 && (
                               <View>
                              {
-                                shares.map(m=>{return(<Share name={m.memberName} count={m.share} shares={shares} key={m._id} id={m._id} setShare={setShares} amount={500}/> )})}
+                                shares.map(m=>{return(<Share name={m.memberName} count={m.share} shares={shares} key={m._id} id={m._id} setShare={setShares} amount={amount}/> )})}
 
                                
                                 {/* <Share name="Dipankar Prasad" amount="500"/> */}
