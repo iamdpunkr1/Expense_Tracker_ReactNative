@@ -19,6 +19,16 @@ const Home = ({navigation}) => {
   const {user}=useAuthContext()
   const { selfExpenses, setSelfExpenses,groups, setGroups } = useExpenseContext()
   
+  //total expense amount
+  let total=0
+  if(user){
+    selfExpenses.forEach(exp=> total+=parseInt(exp.amount))
+    let groupTotal=0
+    groups.forEach(grp=>grp.members.forEach(mem=> {if(mem.memberEmail===user.user.email){groupTotal+=parseInt(mem.groupBalance)}}))
+    total+=groupTotal
+  }
+
+  
   //group modal
   const [active , setactive] = useState(false);
 
@@ -115,7 +125,7 @@ const Home = ({navigation}) => {
           return
         }
 
-    const response = await fetch('http://10.0.2.2:4000/dashboard/groups/expense/delete/'+_id,{
+    const response = await fetch('http://10.0.2.2:4000/dashboard/'+_id,{
       method:'DELETE',
       headers:{
         'Authorization': `Bearer ${user.token}`
@@ -191,7 +201,7 @@ const Home = ({navigation}) => {
                             name='rupee-sign'
                             size={30}
                             color="#fff"
-                              /> 4,543
+                              /> {total}
              </Text>
         </LinearGradient>
         {/*Total Expensea! end */}
@@ -314,7 +324,7 @@ const Home = ({navigation}) => {
          {/*Personal Expenses start */}
         <View style={{flex:0,flexDirection:'column',marginTop:3,maxHeight:320}}>
           <ScrollView>
-          {selfExpenses.length>0 && selfExpenses.map((exp)=><Expense deleteSelfExpense={deleteSelfExpense}  key={exp._id} expenseData={exp}/>)}
+          {selfExpenses.length>0 && selfExpenses.map((exp)=><Expense deleteSelfExpense={deleteSelfExpense} gid={exp._id}  key={exp._id} expenseData={exp}/>)}
             {/* <Expense iname="fast-food-outline" name="Expense" date="20-05-2023" amount={199}/> */}
             {/* <Expense iname="medical-outline" name="Blood Test" date="10-05-2023" amount={499}/> */}
           </ScrollView>

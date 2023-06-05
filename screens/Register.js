@@ -5,7 +5,7 @@ import { useSignup } from '../hooks/useSignup'
 
 const Register = ({navigation}) => {
 
-
+    const balance=0
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [username, setUserName] = useState('')
@@ -13,7 +13,7 @@ const Register = ({navigation}) => {
   
     const handleSubmit = async () => {
       // e.preventDefault()
-      await signup(email,password,username,navigation)
+      await signup(email,password,username,balance,navigation)
     }
   
   return (

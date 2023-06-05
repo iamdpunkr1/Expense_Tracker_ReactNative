@@ -14,8 +14,9 @@ import { useNavigation } from '@react-navigation/native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import { useLogout } from '../hooks/useLogout';
+import { useAuthContext } from '../hooks/useAuthContext'
 const CustomDrawer = (props) => {
-
+  const {user}=useAuthContext() 
   const navigation = useNavigation();
 
   const {logout} = useLogout()
@@ -45,7 +46,7 @@ const CustomDrawer = (props) => {
               fontFamily: 'Roboto-Medium',
               marginBottom: 5,
             }}>
-            Dipankar
+          {user && user.user.username}      
           </Text>
           <View style={{flexDirection: 'row'}}>
           <FontAwesome5 name='rupee-sign' size={15} color="white"/> 
@@ -55,7 +56,7 @@ const CustomDrawer = (props) => {
                 fontFamily: 'Roboto-Medium',
                 marginLeft: 5,
               }}>
-              5000
+              {user && user.user.balance}
             </Text>
             
           </View>

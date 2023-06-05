@@ -33,7 +33,7 @@ const GroupInfo = ({navigation,route}) => {
   const [date, setDate] = useState(currDate)
   //id of single group
   const { id } = route.params;
-  const [groupData,setGroupData] = useState(groups.filter(group=>group._id===id))
+  const [groupData,setGroupData] = useState(null)
 
   //add member modal
   const [active , setactive] = useState(false);
@@ -47,9 +47,7 @@ const GroupInfo = ({navigation,route}) => {
     setActiveTab(tabIndex);
   };
  
-  const [shares,setShares] = useState(groupData[0].members.map((member) => {
-    return { ...member, share: 1};
-  }))
+  const [shares,setShares] = useState(null)
 
   //fetch the single group
   useEffect(()=>{
@@ -90,7 +88,7 @@ const GroupInfo = ({navigation,route}) => {
     //checking groupBalance has no -negative balance
     const isRemovable = groupData[0].members.filter(m=>{
       if(m.memberEmail===mEmail){
-        if(m.groupBalance>=0){
+        if(m.groupBalance===0){
           return true
         }else{
           return false
@@ -363,7 +361,7 @@ const deleteGroupExpense = async(gid)=>{
         {/*Group Info! start */}
         <LinearGradient colors={['#e44816','#d7261b']}   style={{backgroundColor:"#e44816",marginBottom:10}}   className='rounded-md h-28 w-full p-5 mt-2 text-center'>
              <Text    className='font-bold mt-1 ml-1' style={{fontFamily:"Roboto-Medium", color:"white",fontSize:30}}>
-                 {groupData[0].groupTitle}
+                 {groupData && groupData[0].groupTitle}
              </Text>
              <Text  style={{color:"white", fontSize:16, marginLeft:5,fontFamily:"Roboto-Medium",}}>Created by: You</Text>
         </LinearGradient>
@@ -375,7 +373,7 @@ const deleteGroupExpense = async(gid)=>{
          }
         {/* members */}
          <View style={{flex:0,flexDirection:'row',flexWrap:'wrap'}}>
-         {groupData[0].members.length>0 && groupData[0].members.map((member,idx)=>{ if(idx===0){
+         {groupData && (groupData[0].members.length>0 && groupData[0].members.map((member,idx)=>{ if(idx===0){
                                                                                return   <View  key={member.memberEmail}  style={{backgroundColor:"#595b62",flex:0,justifyContent:'center',alignItems:'center',flexDirection:'row'}}   className='rounded-md pb-1 px-3 mr-1 mb-2'>
                                                                                             <Text  className='font-bold'  style={{color:"white", fontSize:15,fontFamily:"Roboto-Medium",marginTop:5}}>{member.memberName}</Text> 
                                                                                         </View>
@@ -387,11 +385,11 @@ const deleteGroupExpense = async(gid)=>{
                                                                                                </TouchableOpacity>
                                                                                              </View>
                                                                              }
-                                                                            })}
+                                                                            }))}
 
          </View>
          <View style={{flex:0,flexDirection:'column',maxHeight:'71%'}}>
-            <Tabs deleteGroupExpense={deleteGroupExpense} groupExpenses={groupData[0].groupExpenses}  balance={groupData[0].members}/>
+            <Tabs deleteGroupExpense={deleteGroupExpense} groupExpenses={groupData && groupData[0].groupExpenses}  balance={groupData && groupData[0].members}/>
          </View>
 
      </View>
@@ -601,7 +599,7 @@ const deleteGroupExpense = async(gid)=>{
 
                             {activeTab === 0 && (
                               <View>
-                                {groupData[0].members.map(m=>{
+                                {groupData && groupData[0].members.map(m=>{
                                       return(
                                         <View key={m._id} style={{marginTop:10,flexDirection: 'row',justifyContent:"space-between",borderColor:"#cbc4c5",borderWidth:2,borderRadius:5,padding:10}}>
                                         <Text style={{color:"white"}}>{m.memberName}</Text>
@@ -621,7 +619,7 @@ const deleteGroupExpense = async(gid)=>{
                             )}
                             {activeTab === 1 && (
                               <View>
-                             {
+                             {shares &&
                                 shares.map(m=>{return(<Share name={m.memberName} count={m.share} shares={shares} key={m._id} id={m._id} setShare={setShares} amount={amount}/> )})}
 
                                

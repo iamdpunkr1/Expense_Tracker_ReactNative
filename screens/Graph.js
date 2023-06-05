@@ -1,17 +1,69 @@
 import { View, Text, TouchableOpacity, Modal,TextInput } from 'react-native'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import Donut from '../partials/Donut'
 import { ScrollView } from 'react-native-gesture-handler'
+import { useAuthContext } from '../hooks/useAuthContext'
+import { useExpenseContext } from '../context/ExpenseContext'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 const Graph = ({navigation}) => {
-
-  const [balance,setBalance] = useState('4000')
-  const [spent,setSpent] = useState(3000)
+  const {user, dispatch}=useAuthContext()
+  const { selfExpenses, groups } = useExpenseContext()
+  
+ //total expense amount
+ let total=0
+ 
+  if(user){
+    selfExpenses.forEach(exp=> total+=parseInt(exp.amount))
+    let groupTotal=0
+    groups.forEach(grp=>grp.members.forEach(mem=> {if(mem.memberEmail===user.user.email){groupTotal+=parseInt(mem.groupBalance)}}))
+    total+=groupTotal
+  }
+ 
+  const [balance,setBalance] = useState(user && user.user.balance)
+  const [spent,setSpent] = useState(total)
   const [active , setactive] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
+  const [error , setError] = useState(null);
   
+  const changeBalance =async()=>{
+   
+    if(!user){
+      setError("You must ge logged in")
+      return
+    }
+    const newBalance=balance
+    const response = await fetch('http://10.0.2.2:4000/balance/'+user.user._id,{
+        method:'PATCH',
+        body:JSON.stringify({newBalance}),
+        headers:{
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${user.token}`
+        }
+      })
+  
+      const json = await response.json()
+      if(!response.ok){
+        setError(json.error)
+      }
+      if(response.ok){
+        setError(null)
+        setactive(!active)
+        console.log(json)
+        // save the user to local storage
+        // AsyncStorage.setItem('user',JSON.stringify(json))
+        //update the auth context
+         dispatch({type:'LOGIN', payload:{user:json}})
+      }
+        
+  }
+
+  useEffect(()=>{
+    console.log("useEffect called balance")
+  },[user])
+
   return (
   
     <SafeAreaView style={{flex:1, backgroundColor:"#0d0f14"}}>
@@ -94,6 +146,11 @@ const Graph = ({navigation}) => {
               </Text>
             </View>
           </View>
+          {error && 
+                          // <View style={{borderColor:"red",borderRadius:7,borderWidth:4,padding:10}}>
+                            <Text style={{color:"red",fontSize:18,textAlign:"center"}}>{error}</Text>
+                          // </View>
+                      }
           <ScrollView style={{height:450}}>
              {isVisible && <Donut/>}
           </ScrollView>
@@ -176,7 +233,8 @@ const Graph = ({navigation}) => {
                           marginTop:5,
                           marginRight:10
                         }}
-                          onPress={()=>{setactive(!active)}}>
+                          onPress={()=>{setactive(!active)
+                                        setError(null)}}>
                             <Text style={ {
                                     textAlign: 'center',
                                     fontWeight: '700',
@@ -193,7 +251,7 @@ const Graph = ({navigation}) => {
                           width:'40%',
                           marginTop:5
                         }}
-                          onPress={()=>{setactive(!active)}}>
+                          onPress={changeBalance}>
                             <Text style={ {
                                     textAlign: 'center',
                                     fontWeight: '700',

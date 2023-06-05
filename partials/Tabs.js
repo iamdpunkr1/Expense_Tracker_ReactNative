@@ -47,7 +47,7 @@ const Tabs = ({groupExpenses, balance, deleteGroupExpense}) => {
     
 
           <ScrollView  style={{marginTop:10}}>
-            {groupExpenses.map((exp,idx)=>{ return (<Expense deleteSelfExpense={deleteGroupExpense} gid={idx}  key={idx} expenseData={exp}/>);})}
+            {groupExpenses && groupExpenses.map((exp,idx)=>{ return (<Expense deleteSelfExpense={deleteGroupExpense} gid={idx}  key={idx} expenseData={exp}/>);})}
           </ScrollView>
 
     
