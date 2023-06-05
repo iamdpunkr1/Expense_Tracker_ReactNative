@@ -115,7 +115,7 @@ const Home = ({navigation}) => {
           return
         }
 
-    const response = await fetch('http://10.0.2.2:4000/dashboard/'+_id,{
+    const response = await fetch('http://10.0.2.2:4000/dashboard/groups/expense/delete/'+_id,{
       method:'DELETE',
       headers:{
         'Authorization': `Bearer ${user.token}`

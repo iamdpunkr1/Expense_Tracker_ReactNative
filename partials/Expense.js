@@ -6,9 +6,9 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 
-const Expense = ({expenseData, deleteSelfExpense}) => {
+const Expense = ({expenseData, deleteSelfExpense,gid}) => {
   //list people-outline receipt-outline  cart-outline
-  const {title, amount, category, date, _id}=expenseData 
+  const {title, amount, category, date}=expenseData 
   let iname=''
   switch(category){
     case 'General': iname="receipt-outline"
@@ -48,7 +48,7 @@ const Expense = ({expenseData, deleteSelfExpense}) => {
             </View>
         </View>
         <View>
-        <TouchableOpacity onPress={()=> deleteSelfExpense(_id)}>
+        <TouchableOpacity onPress={()=> deleteSelfExpense(gid)}>
          <AntDesign style={{paddingLeft:24}} name='delete' size={20} color="#b5807f"/>
         </TouchableOpacity>
         <Text   style={{color:"white", fontSize:16,fontFamily:"Roboto-Medium",marginTop:5, marginRight:10}}>

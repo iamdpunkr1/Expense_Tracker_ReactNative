@@ -190,6 +190,9 @@ const GroupInfo = ({navigation,route}) => {
       groupExpenses:[...temp[0].groupExpenses,{
                                                 title,category,
                                                 date,amount:parseInt(amount),
+                                                shares:groupData[0].members.map((member) => {
+                                                  return { ...member, share: 1};
+                                                })
                                               }],
       members:temp[0].members.map(member=> {return {...member,groupBalance:member.groupBalance+amount/temp[0].members.length}})
     }
@@ -256,47 +259,75 @@ const GroupInfo = ({navigation,route}) => {
 
 }
 
+//delete group expense
+const deleteGroupExpense = async(gid)=>{
+
+  console.log("Deleteed exp",gid)
+
+  let [temp]=groupData[0].groupExpenses.filter((exp,idx)=>idx===gid)
+
+  const value=(mEmail,sum)=>{
+    const [m]= temp.shares.filter(m=>{if(m.memberEmail===mEmail){ return m}})
+    if(m){
+      return ((temp.amount / sum) * m.share)%1===0?parseInt((temp.amount / sum) * m.share).toFixed(0):parseInt((temp.amount / sum) * m.share).toFixed(1)
+    }else{
+      return 0
+    }
+
+    }
 
 
 
-  const groupExpenses=[
-    {
-      iname:"fast-food-outline",
-      name:"Fast Food",
-      date:"21-05-2023",
-      amount:299
-    },
-    {
-      iname:"fast-food-outline",
-      name:"Fast Food",
-      date:"21-05-2023",
-      amount:299
-    },
-    {
-      iname:"fast-food-outline",
-      name:"Fast Food",
-      date:"21-05-2023",
-      amount:299
-    },
-    {
-      iname:"fast-food-outline",
-      name:"Fast Food",
-      date:"21-05-2023",
-      amount:299
-    },
+  const sum = temp.shares.reduce((acc, { share }) => acc + share, 0);
 
-  ]
-
- const balances =[
-  {
-    userName:"Dipankar Prasad",
-    amount:487
-  },
-  {
-    userName:"Akash Chetia",
-    amount:890
+  const newExpense = {
+      amount:groupData[0].amount-parseInt(temp.amount),
+      groupExpenses:groupData[0].groupExpenses.filter((exp,idx)=> idx!=gid),
+      members:groupData[0].members.map(member=> {return {...member,groupBalance:member.groupBalance - parseInt(value(member.memberEmail, sum))}})
+    
   }
- ]
+ 
+
+    // console.log('from Deleted:',newExpense)
+    if(!user){
+      setError("You must be logged in")
+     }
+    
+     const response = await fetch('http://10.0.2.2:4000/dashboard/groups/expense/delete/'+id,{
+       method:'PATCH',
+       body:JSON.stringify(newExpense),
+       headers:{
+         'Content-Type': 'application/json',
+         'Authorization': `Bearer ${user.token}`
+       }
+     })
+ 
+     const json = await response.json()
+
+     if(!response.ok){
+      setError(json.error)
+      console.log("Not Deleted",json)
+     }
+
+
+
+     if(response.ok){
+      
+      setGroups(groups.map(group=>{
+        if(group._id===id){
+          return {...group, json }
+                      }else{
+          return group
+        }
+      }))
+  
+      setError(null)
+  
+     }
+
+}
+
+
 
  const actions = [
   {
@@ -343,13 +374,13 @@ const GroupInfo = ({navigation,route}) => {
         // </View>
          }
         {/* members */}
-         <View style={{flex:0,flexDirection:'row'}}>
+         <View style={{flex:0,flexDirection:'row',flexWrap:'wrap'}}>
          {groupData[0].members.length>0 && groupData[0].members.map((member,idx)=>{ if(idx===0){
-                                                                               return   <View  key={member.memberEmail}  style={{backgroundColor:"#595b62",flex:0,justifyContent:'center',alignItems:'center',flexDirection:'row'}}   className='rounded-md pb-1 px-3 mr-1'>
+                                                                               return   <View  key={member.memberEmail}  style={{backgroundColor:"#595b62",flex:0,justifyContent:'center',alignItems:'center',flexDirection:'row'}}   className='rounded-md pb-1 px-3 mr-1 mb-2'>
                                                                                             <Text  className='font-bold'  style={{color:"white", fontSize:15,fontFamily:"Roboto-Medium",marginTop:5}}>{member.memberName}</Text> 
                                                                                         </View>
                                                                              }else{
-                                                                                     return  <View   key={member.memberEmail} style={{backgroundColor:"#595b62",flex:0,justifyContent:'center',alignItems:'center',flexDirection:'row'}}   className='rounded-md pb-1 px-3'>
+                                                                                     return  <View   key={member.memberEmail} style={{backgroundColor:"#595b62",flex:0,justifyContent:'center',alignItems:'center',flexDirection:'row'}}   className='rounded-md pb-1 px-3 mb-2'>
                                                                                                <Text  className='font-bold'  style={{color:"white", fontSize:15,fontFamily:"Roboto-Medium",marginTop:5}}>{member.memberName}</Text> 
                                                                                                <TouchableOpacity onPress={()=>{deleteMember(member.memberEmail)}}>
                                                                                                 <Ionicons style={{marginTop:4, marginLeft:4}} name='close' size={20} color="#fff" />              
@@ -359,8 +390,8 @@ const GroupInfo = ({navigation,route}) => {
                                                                             })}
 
          </View>
-         <View style={{flex:0,flexDirection:'column',marginTop:3,maxHeight:'71%'}}>
-            <Tabs  groupExpenses={groupExpenses}  balance={balances}/>
+         <View style={{flex:0,flexDirection:'column',maxHeight:'71%'}}>
+            <Tabs deleteGroupExpense={deleteGroupExpense} groupExpenses={groupData[0].groupExpenses}  balance={groupData[0].members}/>
          </View>
 
      </View>

@@ -4,13 +4,14 @@ import Expense from './Expense';
 import Balance from './Balance';
 
 
-const Tabs = ({groupExpenses, balance}) => {
+const Tabs = ({groupExpenses, balance, deleteGroupExpense}) => {
   const [activeTab, setActiveTab] = useState(0);
 
   const handleTabPress = (tabIndex) => {
     setActiveTab(tabIndex);
   };
 
+   
   return (
     <View style={{marginTop:10,}}>
       <View style={{ flexDirection: 'row',borderColor:"white",backgroundColor:"white",borderWidth:7,borderRadius:7 }}>
@@ -46,14 +47,14 @@ const Tabs = ({groupExpenses, balance}) => {
     
 
           <ScrollView  style={{marginTop:10}}>
-            {/* {groupExpenses.map((data,index)=>{ return (<Expense key={index}  iname={data.iname} name={data.name} date={data.date} amount={data.amount}/>);})} */}
+            {groupExpenses.map((exp,idx)=>{ return (<Expense deleteSelfExpense={deleteGroupExpense} gid={idx}  key={idx} expenseData={exp}/>);})}
           </ScrollView>
 
     
       )}
       {activeTab === 1 && (
         <View style={{marginTop:10}}>
-          {/* {balance.map((data,index)=>{return (<Balance key={index} userName={data.userName} amount={data.amount}/>)})} */}
+          {balance.map((data,index)=>{return (<Balance key={index} userName={data.memberName} amount={data.groupBalance}/>)})}
         </View>
       )}
 
