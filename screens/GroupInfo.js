@@ -37,6 +37,10 @@ const GroupInfo = ({navigation,route}) => {
 
   //add member modal
   const [active , setactive] = useState(false);
+  
+  //add member modal
+  const [edit , setEdit] = useState(false);
+
   //add group expense modal
   const [expactive , setexpactive] = useState(false);
   //set expenses | balance tab
@@ -188,6 +192,7 @@ const GroupInfo = ({navigation,route}) => {
       groupExpenses:[...temp[0].groupExpenses,{
                                                 title,category,
                                                 date,amount:parseInt(amount),
+                                                method:"equally",
                                                 shares:groupData[0].members.map((member) => {
                                                   return { ...member, share: 1};
                                                 })
@@ -205,6 +210,7 @@ const GroupInfo = ({navigation,route}) => {
                                                 title,
                                                 category,
                                                 date,
+                                                method:"byShare",
                                                 amount:parseInt(amount),
                                                 shares:shares
                                               }],
@@ -324,8 +330,34 @@ const deleteGroupExpense = async(gid)=>{
      }
 
 }
+const showEdit=(exp)=>{
+  setEdit(true)
+  const [temp] = groupData[0].groupExpenses.filter((e,idx)=>idx===exp)
+  setAmount(temp.amount.toString())
+  setTitle(temp.title)
+  setCategory(temp.category)
+  setDate(temp.date)
+  setShares(temp.shares)
+  if(temp.method==="equally"){
+    handleTabPress(0)
+  }else{
+    handleTabPress(1)
+  }
+  console.log(temp.method)
+}
 
+const hideEdit=()=>{
+  setEdit(false)
+  // const [temp] = groupData[0].groupExpenses.filter((e,idx)=>idx===exp)
+  setAmount(0)
+  setTitle('')
+  setCategory('')
+  setDate(currDate)
 
+}
+const handleEdit=()=>{
+  console.log("HandleEDit")
+}
 
  const actions = [
   {
@@ -389,7 +421,8 @@ const deleteGroupExpense = async(gid)=>{
 
          </View>
          <View style={{flex:0,flexDirection:'column',maxHeight:'71%'}}>
-            <Tabs deleteGroupExpense={deleteGroupExpense} groupExpenses={groupData && groupData[0].groupExpenses}  balance={groupData && groupData[0].members}/>
+            <Tabs deleteGroupExpense={deleteGroupExpense} groupExpenses={groupData && groupData[0].groupExpenses} 
+                  balance={groupData && groupData[0].members} showEdit={showEdit}/>
          </View>
 
      </View>
@@ -546,7 +579,7 @@ const deleteGroupExpense = async(gid)=>{
 
                           <View style={{flex:0,flexDirection:"row",width:"73%"}}>
                             <View>
-                            <DropdownComponent  category={category} setCategory={setCategory}/>
+                              <DropdownComponent  category={category} setCategory={setCategory}/>
                             </View>
 
                               <View className='border-solid border-2 border-b-gray-400 mt-3 ml-3'  style={{flexDirection:"row"}}>
@@ -672,6 +705,188 @@ const deleteGroupExpense = async(gid)=>{
                         }}>Add Expense</Text>
                   </TouchableOpacity>
         </View>
+            </View>
+          </View>
+        </Modal>
+
+
+       {/* EDIT group expense */}
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={edit}
+          onRequestClose={() => {
+            // console.warn("closed");
+          }}
+          >
+          <View style={{    flex: 1,
+                            backgroundColor : "black",
+                            alignItems: 'center',
+                            justifyContent: 'center',}}>
+            <View  style={ {
+                        backgroundColor : "black" ,
+                        height :600 ,
+                        minWidth:'90%',
+                        borderRadius : 15,
+                        alignItems : "center",
+                        justifyContent : "center",
+                        borderColor : "white",
+                        borderWidth:2,
+                      }}>
+               <Text style={ {
+                          fontWeight:"500",
+                          fontSize : 20,
+                          color : "white",
+                          marginBottom:30,
+                          paddingTop:30
+                        }}>Edit Expense</Text>
+                         <View className=' border-solid border-2 w-full border-b-gray-400'  style={{flexDirection:"row"}}>
+                            <FontAwesome5
+                                name='rupee-sign'
+                                size={30}
+                                color="#9ca3af"
+                                style={{marginRight: 5}}
+                              />
+                              <TextInput  value={amount} onChangeText={(txt)=>{setAmount(txt)}} keyboardType={'numeric'}  placeholderTextColor={"#9ca3af"} placeholder='Enter the amount'  style={{paddingVertical:0, color:"white",minWidth:'75%'}}/>
+                          </View>
+
+                          <View className=' border-solid border-2 w-full border-b-gray-400 mt-3'  style={{flexDirection:"row"}}>
+                            <FontAwesome5
+                                name='file-invoice'
+                                size={30}
+                                color="#9ca3af"
+                                style={{marginRight: 5}}
+                              />
+                              <TextInput  value={title} onChangeText={(txt)=>{setTitle(txt)}}  placeholderTextColor={"#9ca3af"} placeholder='what was this expense for?'  style={{paddingVertical:0, color:"white",minWidth:'75%'}}/>
+                          </View>
+
+                          <View style={{flex:0,flexDirection:"row",width:"73%"}}>
+                            <View>
+                              <DropdownComponent  category={category} setCategory={setCategory}/>
+                            </View>
+
+                              <View className='border-solid border-2 border-b-gray-400 mt-3 ml-3'  style={{flexDirection:"row"}}>
+                                <MaterialIcons
+                                    name='date-range'
+                                    size={30}
+                                    color="#9ca3af"
+                                    style={{marginRight: 5}}
+                                  />
+                                  <View style={{paddingTop:5}}>
+                                   <DatePicker  date={date}
+                                                setDate={setDate}/>
+                                  </View>
+                                 
+                              </View>
+                          </View>
+                          {/* Splitting  */}
+                          <View>
+                           <Text style={{fontWeight:"bold" ,color:"white", fontSize:16,fontFamily:"Roboto-Medium",marginTop:10}}>Split:</Text> 
+
+                           <View style={{marginTop:10, width:300}}>
+                            <View style={{ flexDirection: 'row',borderColor:"#cbc4c5",backgroundColor:"#cbc4c5",borderWidth:3,borderRadius:5}}>
+                              <TouchableOpacity
+                                onPress={() => handleTabPress(0)}
+                                style={{
+                                  backgroundColor: activeTab === 0 ? '#0d0f14' : '#cbc4c5',
+                                  padding: 10,
+                                  flex: 1,
+                                  alignItems: 'center',
+                                  borderRadius:7
+                                }}
+                              >
+                                <Text
+                                style={{ color: activeTab === 0 ? '#cbc4c5' : '#0d0f14',}}>Equally</Text>
+                              </TouchableOpacity>
+                              <TouchableOpacity
+                                onPress={() => handleTabPress(1)}
+                                style={{
+                                  backgroundColor: activeTab === 1 ? '#0d0f14' : '#cbc4c5',
+                                  padding: 10,
+                                  flex: 1,
+                                  alignItems: 'center',
+                                  borderRadius:7
+                                }}
+                              >
+                                <Text style={{ color: activeTab === 1 ? '#cbc4c5' : '#0d0f14'}}>By Share</Text>
+                              </TouchableOpacity>
+
+                            </View>
+
+                            {activeTab === 0 && (
+                              <View>
+                                {groupData && groupData[0].members.map(m=>{
+                                      return(
+                                        <View key={m._id} style={{marginTop:10,flexDirection: 'row',justifyContent:"space-between",borderColor:"#cbc4c5",borderWidth:2,borderRadius:5,padding:10}}>
+                                        <Text style={{color:"white"}}>{m.memberName}</Text>
+                                        <View>
+                                        <Text   style={{color:"#b5807f", fontSize:16,fontFamily:"Roboto-Medium", marginRight:10}}>
+                                          <FontAwesome5 name='rupee-sign' size={16} color="#b5807f"/> {(amount/groupData[0].members.length)%1===0?(amount/groupData[0].members.length).toFixed(0):(amount/groupData[0].members.length).toFixed(1)}
+                                        </Text> 
+                                        </View>
+                                        </View>
+                                        )
+                                })}
+
+
+                              </View>
+
+                          
+                            )}
+                            {activeTab === 1 && (
+                              <View>
+                             {shares &&
+                                shares.map(m=>{return(<Share name={m.memberName} count={m.share} shares={shares} key={m._id} id={m._id} setShare={setShares} amount={amount}/> )})}
+
+                               
+                                {/* <Share name="Dipankar Prasad" amount="500"/> */}
+                            </View>
+                            )}
+
+                          </View>
+                          </View>
+                          {error && 
+                            // <View style={{borderColor:"red",borderRadius:7,borderWidth:4,padding:10}}>
+                              <Text style={{color:"red",fontSize:18,textAlign:"center"}}>{error}</Text>
+                            // </View>
+                        }
+                 <View style={{flex:0,flexDirection:'row',marginTop:35}}>
+                   <TouchableOpacity
+                         style={{
+                          backgroundColor: '#492d33',
+                          padding: 15,
+                          borderRadius: 10,
+                          marginBottom: 30,
+                          width:'25%',
+                          marginTop:5,
+                          marginRight:10
+                        }}
+                          onPress={hideEdit}>
+                            <Text style={ {
+                                    textAlign: 'center',
+                                    fontWeight: '700',
+                                    fontSize: 16,
+                                    color: '#fff',
+                        }}>Cancel</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                         style={{
+                          backgroundColor: '#d7261b',
+                          padding: 15,
+                          borderRadius: 10,
+                          marginBottom: 30,
+                          width:'40%',
+                          marginTop:5
+                        }}
+                          onPress={handleEdit}>
+                            <Text style={ {
+                                    textAlign: 'center',
+                                    fontWeight: '700',
+                                    fontSize: 16,
+                                    color: '#fff',
+                        }}>Save Changes</Text>
+                  </TouchableOpacity>
+               </View>
             </View>
           </View>
         </Modal>

@@ -4,7 +4,7 @@ import Expense from './Expense';
 import Balance from './Balance';
 
 
-const Tabs = ({groupExpenses, balance, deleteGroupExpense}) => {
+const Tabs = ({groupExpenses, balance, deleteGroupExpense, showEdit}) => {
   const [activeTab, setActiveTab] = useState(0);
 
   const handleTabPress = (tabIndex) => {
@@ -47,7 +47,8 @@ const Tabs = ({groupExpenses, balance, deleteGroupExpense}) => {
     
 
           <ScrollView  style={{marginTop:10}}>
-            {groupExpenses && groupExpenses.map((exp,idx)=>{ return (<Expense deleteSelfExpense={deleteGroupExpense} gid={idx}  key={idx} expenseData={exp}/>);})}
+            { groupExpenses && groupExpenses.map((exp,idx)=>{ return (<Expense deleteSelfExpense={deleteGroupExpense} gid={idx}
+                key={idx} expenseData={exp} isGroup={true} showEdit={showEdit}/>);})}
           </ScrollView>
 
     

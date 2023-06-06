@@ -12,7 +12,7 @@ const Balance = ({userName, amount}) => {
         </View>
 
         <Text   style={{color:"white", fontSize:16,fontFamily:"Roboto-Medium", marginRight:10}}>
-          <FontAwesome5 name='rupee-sign' size={16} color="white"/> {amount}
+          <FontAwesome5 name='rupee-sign' size={16} color="white"/> {amount%1===0?amount.toFixed(0):amount.toFixed(1)}
         </Text> 
     </View>
   )
