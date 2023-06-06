@@ -51,11 +51,13 @@ const GroupInfo = ({navigation,route}) => {
     setActiveTab(tabIndex);
   };
  
+  //to split expense into shares
   const [shares,setShares] = useState(null)
-
+  //to get index of the expense to be edited
+  const [index,setIndex] = useState(null)
   //fetch the single group
   useEffect(()=>{
-    console.log("useEffect called")
+    console.log("useEffect GROUP")
     const fetchGroupData = async () => {
       const response = await fetch('http://10.0.2.2:4000/groups/'+id,{
         headers:{
@@ -87,6 +89,7 @@ const GroupInfo = ({navigation,route}) => {
   const deleteMember=async(mEmail)=>{
     if(!user){
       setError("You must be logged in")
+      return
      }
      
     //checking groupBalance has no -negative balance
@@ -310,13 +313,13 @@ const deleteGroupExpense = async(gid)=>{
 
      if(!response.ok){
       setError(json.error)
-      console.log("Not Deleted",json)
+      console.log("Not Deleted",json.error)
      }
 
 
 
      if(response.ok){
-      
+      console.log("Deleted",json.error)
       setGroups(groups.map(group=>{
         if(group._id===id){
           return {...group, json }
@@ -330,8 +333,12 @@ const deleteGroupExpense = async(gid)=>{
      }
 
 }
+
+//to show edit modal and load the expense details
 const showEdit=(exp)=>{
+  setIndex(exp)
   setEdit(true)
+
   const [temp] = groupData[0].groupExpenses.filter((e,idx)=>idx===exp)
   setAmount(temp.amount.toString())
   setTitle(temp.title)
@@ -343,20 +350,109 @@ const showEdit=(exp)=>{
   }else{
     handleTabPress(1)
   }
-  console.log(temp.method)
+
 }
 
+//to hide the edit modal option
 const hideEdit=()=>{
   setEdit(false)
-  // const [temp] = groupData[0].groupExpenses.filter((e,idx)=>idx===exp)
-  setAmount(0)
+  setAmount('0')
   setTitle('')
   setCategory('')
   setDate(currDate)
-
+  setShares(groupData[0].members.map((member) => {
+    return { ...member, share: 1 };
+  }))
+  setIndex(null)
 }
+
+//to submit changes of the expense
 const handleEdit=()=>{
-  console.log("HandleEDit")
+
+  if(!user){
+    setError("You must be login")
+    return
+  }
+
+  const temp=groupData
+  let newExpense='';
+  const [prev] = groupData[0].groupExpenses.filter((e,idx)=>idx===index)
+  
+  //old byShare value to be subtracted
+  const oldValue=(mEmail,sum)=>{
+    const [m]= prev.shares.filter(m=>{if(m.memberEmail===mEmail){ return m}})
+    if(m){
+      return ((prev.amount / sum) * m.share)%1===0?parseInt((prev.amount / sum) * m.share).toFixed(0):parseInt((prev.amount / sum) * m.share).toFixed(1)
+    }else{
+      return 0
+    }
+
+    }
+  //old byShare value to be Added
+  const newValue=(mEmail,sum)=>{
+      const [m]= shares.filter(m=>{if(m.memberEmail===mEmail){ return m}})
+   
+        return ((amount / sum) * m.share)%1===0?parseInt((amount / sum) * m.share).toFixed(0):parseInt((amount / sum) * m.share).toFixed(1)
+   
+    }
+  console.log("Outside index: ",index)
+  if(index>=0){
+    console.log("inside index: ",index)
+    if(activeTab===0){
+      newExpense = {
+        amount:(temp[0].amount- prev.amount)+parseInt(amount),
+        groupExpenses:temp[0].groupExpenses.map((exp,idx)=>{
+              if(idx===index){
+                return{
+                  title,category,
+                  date,amount:parseInt(amount),
+                  method:"equally",
+                  shares:prev.shares.map((member) => {
+                    return { ...member, share: 1};
+                  })
+                }
+              }else{
+                return exp
+              }
+        })
+        ,
+        members:temp[0].members.map(member=> {return {...member,groupBalance:(member.groupBalance - prev.amount/prev.shares.length )+amount/prev.shares.length}})
+      }
+    }else{
+      const prevSum = prev.shares.reduce((acc, { share }) => acc + share, 0);
+      const sum = shares.reduce((acc, { share }) => acc + share, 0);
+      newExpense = {
+        amount:(temp[0].amount-prev.amount)+parseInt(amount),
+        groupExpenses:temp[0].groupExpenses.map((exp,idx)=>{
+              if(idx===index){
+                return{
+                  title,category,
+                  date,amount:parseInt(amount),
+                  method:"byShare",
+                  shares:shares
+                }
+              }else{
+                return exp
+              }
+        })
+        ,
+        members:temp[0].members.map(member=> {return {...member,groupBalance:(member.groupBalance-parseInt(oldValue(member.memberEmail, prevSum))) + parseInt(newValue(member.memberEmail, sum))}})
+      }
+    }
+  }
+
+  console.log("Save Changes: ",newExpense)
+
+  setEdit(false)
+  setAmount('0')
+  setTitle('')
+  setCategory('')
+  setDate(currDate)
+  setShares(groupData[0].members.map((member) => {
+    return { ...member, share: 1 };
+  }))
+  setIndex(null)
+
 }
 
  const actions = [
@@ -815,13 +911,13 @@ const handleEdit=()=>{
 
                             {activeTab === 0 && (
                               <View>
-                                {groupData && groupData[0].members.map(m=>{
+                                {shares && shares.map(m=>{
                                       return(
                                         <View key={m._id} style={{marginTop:10,flexDirection: 'row',justifyContent:"space-between",borderColor:"#cbc4c5",borderWidth:2,borderRadius:5,padding:10}}>
                                         <Text style={{color:"white"}}>{m.memberName}</Text>
                                         <View>
                                         <Text   style={{color:"#b5807f", fontSize:16,fontFamily:"Roboto-Medium", marginRight:10}}>
-                                          <FontAwesome5 name='rupee-sign' size={16} color="#b5807f"/> {(amount/groupData[0].members.length)%1===0?(amount/groupData[0].members.length).toFixed(0):(amount/groupData[0].members.length).toFixed(1)}
+                                          <FontAwesome5 name='rupee-sign' size={16} color="#b5807f"/> {(amount/shares.length)%1===0?(amount/shares.length).toFixed(0):(amount/shares.length).toFixed(1)}
                                         </Text> 
                                         </View>
                                         </View>

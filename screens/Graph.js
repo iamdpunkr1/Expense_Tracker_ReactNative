@@ -54,7 +54,7 @@ const Graph = ({navigation}) => {
   }
 
   useEffect(()=>{
-    console.log("useEffect called balance")
+    console.log("useEffect BALANCE")
     if(user){
        //total expense amount
         let total=0

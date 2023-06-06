@@ -20,10 +20,10 @@ const loginUser = async(req, res)=>{
 
 //signUp a user
 const signupUser = async(req, res)=>{
-    const {email, password, username}=req.body
+    const {email, password, username,balance}=req.body
 
     try{
-        const user= await User.signup(email,password,username)
+        const user= await User.signup(email,password,username,balance)
         const token= createToken(user._id)
         res.status(200).json({user,token})
     }catch(error){
@@ -31,4 +31,23 @@ const signupUser = async(req, res)=>{
     }
 }
 
-module.exports={loginUser, signupUser}
+//set Balance
+const setBalance=async(req,res)=>{
+    const { id } = req.params
+    const {newBalance}=req.body
+     try{
+
+        const userd= await User.updateOne({_id:id},
+            {
+                $set:{
+                    balance:newBalance
+                }
+            })
+     const user = await User.findOne({_id:id})
+     const token= createToken(user._id)
+     res.status(200).json({user,token})
+     }catch(error){
+        res.status(400).json({error:error.message})
+     }
+}
+module.exports={loginUser, signupUser, setBalance}

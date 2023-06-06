@@ -47,8 +47,10 @@ const Home = ({navigation}) => {
   //group states
   const [groupTitle, setGroupTitle] = useState("");
   const [groupCategory, setGroupCategory] = useState("General");
-    // //refresh every time there is a change in expenses
+
+   //refresh every time there is a change in expenses
     useEffect(()=>{
+      console.log("useEffect HOME")
       const fetchSelfExpenses = async () => {
         const response = await fetch('http://10.0.2.2:4000/dashboard', {
           headers: {'Authorization': `Bearer ${user.token}`},
@@ -80,7 +82,7 @@ const Home = ({navigation}) => {
         fetchGroups()
       }
   
-  },[user,setSelfExpenses,setGroups])
+  },[user,setGroups,setSelfExpenses])
 
   //Add expense
   const handleSubmit= async()=>{
