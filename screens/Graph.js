@@ -12,18 +12,10 @@ const Graph = ({navigation}) => {
   const {user, dispatch}=useAuthContext()
   const { selfExpenses, groups } = useExpenseContext()
   
- //total expense amount
- let total=0
- 
-  if(user){
-    selfExpenses.forEach(exp=> total+=parseInt(exp.amount))
-    let groupTotal=0
-    groups.forEach(grp=>grp.members.forEach(mem=> {if(mem.memberEmail===user.user.email){groupTotal+=parseInt(mem.groupBalance)}}))
-    total+=groupTotal
-  }
+
  
   const [balance,setBalance] = useState(user && user.user.balance)
-  const [spent,setSpent] = useState(total)
+  const [spent,setSpent] = useState(0)
   const [active , setactive] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
   const [error , setError] = useState(null);
@@ -46,23 +38,34 @@ const Graph = ({navigation}) => {
   
       const json = await response.json()
       if(!response.ok){
+        console.log("error: ",json)
         setError(json.error)
       }
       if(response.ok){
         setError(null)
-        setactive(!active)
+        setactive(false)
         console.log(json)
         // save the user to local storage
-        // AsyncStorage.setItem('user',JSON.stringify(json))
-        //update the auth context
-         dispatch({type:'LOGIN', payload:{user:json}})
+        AsyncStorage.setItem('user',JSON.stringify(json))
+        // update the auth context
+         dispatch({type:'LOGIN', payload:json})
       }
         
   }
 
   useEffect(()=>{
     console.log("useEffect called balance")
-  },[user])
+    if(user){
+       //total expense amount
+        let total=0
+        selfExpenses.forEach(exp=> total+=parseInt(exp.amount))
+        let groupTotal=0
+        groups.forEach(grp=>grp.members.forEach(mem=> {if(mem.memberEmail===user.user.email){groupTotal+=parseInt(mem.groupBalance)}}))
+        total+=groupTotal
+        setSpent(total)
+      
+    }
+  },[user,groups,selfExpenses])
 
   return (
   
