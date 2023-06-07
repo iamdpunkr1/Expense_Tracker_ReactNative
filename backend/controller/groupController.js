@@ -155,7 +155,8 @@ const updateExpense = async (req, res) =>{
         
             const group= await Group.updateOne({_id:id},
                 {
-                    $set:{amount,
+                    $set:{
+                        amount,
                         groupExpenses,
                         members
                     }
@@ -179,5 +180,6 @@ module.exports={
     removeMember,
     deleteGroupExpense,
     addExpense,
+    updateExpense,
     getGroup
 }

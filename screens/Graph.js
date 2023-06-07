@@ -26,7 +26,7 @@ const Graph = ({navigation}) => {
       setError("You must ge logged in")
       return
     }
-    const newBalance=balance
+    const newBalance=parseInt(balance)
     const response = await fetch('http://10.0.2.2:4000/balance/'+user.user._id,{
         method:'PATCH',
         body:JSON.stringify({newBalance}),

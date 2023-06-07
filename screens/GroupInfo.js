@@ -368,7 +368,7 @@ const hideEdit=()=>{
 }
 
 //to submit changes of the expense
-const handleEdit=()=>{
+const handleEdit=async()=>{
 
   if(!user){
     setError("You must be login")
@@ -442,17 +442,46 @@ const handleEdit=()=>{
     }
   }
 
-  console.log("Save Changes: ",newExpense)
+  const response = await fetch('http://10.0.2.2:4000/dashboard/groups/update/'+id,{
+    method:'PATCH',
+    body:JSON.stringify(newExpense),
+    headers:{
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${user.token}`
+    }
+  })
 
-  setEdit(false)
-  setAmount('0')
-  setTitle('')
-  setCategory('')
-  setDate(currDate)
-  setShares(groupData[0].members.map((member) => {
-    return { ...member, share: 1 };
-  }))
-  setIndex(null)
+  const json = await response.json()
+
+  if(!response.ok){
+   setError(json.error)
+   console.log("Not Updated",json.error)
+  }
+
+  if(response.ok){
+   setGroups(groups.map(group=>{
+     if(group._id===id){
+       return {...group, json }
+                   }else{
+       return group
+     }
+   }))
+
+   setError(null)
+   setToggle(!toggle)
+   setEdit(false)
+   setAmount('0')
+   setTitle('')
+   setCategory('')
+   setDate(currDate)
+   setShares(groupData[0].members.map((member) => {
+     return { ...member, share: 1 };
+   }))
+   setIndex(null)
+  }
+
+
+
 
 }
 
