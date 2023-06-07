@@ -17,7 +17,7 @@ import { useExpenseContext } from '../context/ExpenseContext'
 const Home = ({navigation}) => {
   //getting data from Context
   const {user}=useAuthContext()
-  const { selfExpenses, setSelfExpenses,groups, setGroups } = useExpenseContext()
+  const { selfExpenses, setSelfExpenses,groups, setGroups,toggle } = useExpenseContext()
   
   //total expense amount
   let total=0
@@ -82,7 +82,7 @@ const Home = ({navigation}) => {
         fetchGroups()
       }
   
-  },[user,setGroups,setSelfExpenses])
+  },[toggle])
 
   //Add expense
   const handleSubmit= async()=>{
@@ -308,7 +308,7 @@ const Home = ({navigation}) => {
         {/*Groups Boxes start */}
         <ScrollView horizontal={true} className=' h-32'>
           <View  style={{flex:0,flexDirection:'row' ,justifyContent:'space-evenly',alignContent:'space-between', marginTop:6,}}>
-          {groups.length>0 && groups.map((grp)=><DashGroup groupData={grp} nav={navigation} key={grp._id}  />)} 
+          {groups.length>0 && groups.map((grp)=><DashGroup groupData={grp} nav={navigation} key={grp._id} />)} 
             {/* <DashGroup iname="shopping-basket" name="Ration" amount={1500} nav={navigation}/>
             <DashGroup iname="restroom" name="Rent" amount={3300} nav={navigation}/> */}
           </View>

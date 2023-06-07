@@ -144,6 +144,34 @@ const deleteGroupExpense = async (req, res) =>{
         // console.log(error.message)
     }
   }
+
+//update GroupExpense
+const updateExpense = async (req, res) =>{
+    const { id } = req.params
+    const {amount, groupExpenses, members}=req.body
+    
+ 
+    try{
+        
+            const group= await Group.updateOne({_id:id},
+                {
+                    $set:{amount,
+                        groupExpenses,
+                        members
+                    }
+                })
+            const updatedGroup= await Group.findOne({_id:id})
+            // console.log(updatedGroup)
+            res.status(200).json(updatedGroup)
+        
+
+    }catch(error){
+        res.status(400).json({error:error.message})
+        // console.log(error.message)
+    }
+}
+
+ 
 module.exports={
     addGroup,
     getGroups,

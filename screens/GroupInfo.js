@@ -18,7 +18,7 @@ const GroupInfo = ({navigation,route}) => {
  
   //getting data from Context
   const {user}=useAuthContext()
-  const { groups, setGroups } = useExpenseContext()
+  const { groups, setGroups, toggle, setToggle } = useExpenseContext()
   
   //to show errors from databasse
   const [error,setError]=useState(null)
@@ -53,8 +53,10 @@ const GroupInfo = ({navigation,route}) => {
  
   //to split expense into shares
   const [shares,setShares] = useState(null)
+
   //to get index of the expense to be edited
   const [index,setIndex] = useState(null)
+
   //fetch the single group
   useEffect(()=>{
     console.log("useEffect GROUP")
@@ -261,6 +263,7 @@ const GroupInfo = ({navigation,route}) => {
       setDate(currDate)
       setError(null)
       setexpactive(false)
+      setToggle(!toggle)
   
      }
 
@@ -316,10 +319,7 @@ const deleteGroupExpense = async(gid)=>{
       console.log("Not Deleted",json.error)
      }
 
-
-
      if(response.ok){
-      console.log("Deleted",json.error)
       setGroups(groups.map(group=>{
         if(group._id===id){
           return {...group, json }
@@ -329,6 +329,7 @@ const deleteGroupExpense = async(gid)=>{
       }))
   
       setError(null)
+      setToggle(!toggle)
   
      }
 

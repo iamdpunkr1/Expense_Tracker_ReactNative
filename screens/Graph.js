@@ -8,13 +8,13 @@ import { ScrollView } from 'react-native-gesture-handler'
 import { useAuthContext } from '../hooks/useAuthContext'
 import { useExpenseContext } from '../context/ExpenseContext'
 import AsyncStorage from '@react-native-async-storage/async-storage'
-const Graph = ({navigation}) => {
-  const {user, dispatch}=useAuthContext()
-  const { selfExpenses, groups } = useExpenseContext()
-  
 
- 
-  const [balance,setBalance] = useState(user && user.user.balance)
+const Graph = ({navigation}) => {
+  
+  const {user, dispatch}=useAuthContext()
+  const { selfExpenses, groups,toggle } = useExpenseContext()
+  
+  const [balance,setBalance] = useState(user && user.user.balance.toString())
   const [spent,setSpent] = useState(0)
   const [active , setactive] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
@@ -65,7 +65,7 @@ const Graph = ({navigation}) => {
         setSpent(total)
       
     }
-  },[user,groups,selfExpenses])
+  },[toggle,user])
 
   return (
   
