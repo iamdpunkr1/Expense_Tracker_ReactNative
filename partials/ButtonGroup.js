@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { StyleSheet, View, TouchableOpacity, Text } from 'react-native';
 
 const ButtonGroup = ({ buttons, onPress }) => {
-  const [activeButton, setActiveButton] = useState(0); // Initialize state for active button
+  const [activeButton, setActiveButton] = useState(4); // Initialize state for active button
 
   const handlePress = (buttonIndex) => {
     setActiveButton(buttonIndex); // Set the active button to the index of the button that was pressed

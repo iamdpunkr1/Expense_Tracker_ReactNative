@@ -554,7 +554,7 @@ const handleEdit=async()=>{
          </View>
          <View style={{flex:0,flexDirection:'column',maxHeight:'71%'}}>
             <Tabs deleteGroupExpense={deleteGroupExpense} groupExpenses={groupData && groupData[0].groupExpenses} 
-                  balance={groupData && groupData[0].members} showEdit={showEdit}/>
+                  balance={groupData && groupData[0].members} totalAmount={groupData && groupData[0].amount} showEdit={showEdit}/>
          </View>
 
      </View>

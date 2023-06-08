@@ -2,9 +2,9 @@ import React, { useState } from 'react';
 import { View, Text, TouchableOpacity,ScrollView } from 'react-native';
 import Expense from './Expense';
 import Balance from './Balance';
+import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'
 
-
-const Tabs = ({groupExpenses, balance, deleteGroupExpense, showEdit}) => {
+const Tabs = ({groupExpenses, balance, deleteGroupExpense, showEdit, totalAmount}) => {
   const [activeTab, setActiveTab] = useState(0);
 
   const handleTabPress = (tabIndex) => {
@@ -55,7 +55,23 @@ const Tabs = ({groupExpenses, balance, deleteGroupExpense, showEdit}) => {
       )}
       {activeTab === 1 && (
         <View style={{marginTop:10}}>
-          {balance.map((data,index)=>{return (<Balance key={index} userName={data.memberName} amount={data.groupBalance}/>)})}
+
+          {balance.map((data,index)=> {
+
+            return (<Balance key={index} userName={data.memberName} amount={data.groupBalance}/>)
+          })}
+
+                <View style={{flex:0,flexDirection:'row',justifyContent:'space-between',backgroundColor:"#9ca3af",borderColor:"#595b62",borderRadius:5,borderStyle:'solid',borderTopWidth:5,padding:15, marginTop:4}}>
+                    <View style={{flex:0,flexDirection:'row',marginLeft:7}}>
+                        <View style={{marginLeft:10}}>
+                            <Text style={{fontWeight:"bold" ,color:"black", fontSize:18,fontFamily:"Roboto-Medium",}}>Total</Text> 
+                        </View>
+                    </View>
+            
+                    <Text   style={{fontWeight:"bold" ,color:"black", fontSize:18,fontFamily:"Roboto-Medium", marginRight:10}}>
+                      <FontAwesome5 name='rupee-sign' size={18} color="black"/> {totalAmount%1===0?totalAmount.toFixed(0):totalAmount.toFixed(2)}
+                    </Text> 
+                </View>
         </View>
       )}
 
