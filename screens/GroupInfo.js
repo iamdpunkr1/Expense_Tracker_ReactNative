@@ -183,7 +183,7 @@ const GroupInfo = ({navigation,route}) => {
   const value=(mEmail,sum)=>{
     const [m]= shares.filter(m=>{if(m.memberEmail===mEmail){ return m}})
  
-      return ((amount / sum) * m.share)%1===0?parseInt((amount / sum) * m.share).toFixed(0):parseInt((amount / sum) * m.share).toFixed(1)
+      return ((amount / sum) * m.share)%1===0?parseInt((amount / sum) * m.share).toFixed(0):parseInt((amount / sum) * m.share).toFixed(2)
  
     }
   //   const sum = shares.reduce((acc, { share }) => acc + share, 0);
@@ -193,16 +193,16 @@ const GroupInfo = ({navigation,route}) => {
   if(activeTab===0){
     // console.log("handle submit 1")
     newExpense = {
-      amount:temp[0].amount+parseInt(amount),
+      amount:temp[0].amount+parseFloat(amount),
       groupExpenses:[...temp[0].groupExpenses,{
                                                 title,category,
                                                 date,amount:parseInt(amount),
                                                 method:"equally",
-                                                shares:groupData[0].members.map((member) => {
-                                                  return { ...member, share: 1};
+                                                shares:temp[0].members.map((member) => {
+                                                  return { ...member, share: 1, balance:parseFloat(amount/temp[0].members.length)};
                                                 })
                                               }],
-      members:temp[0].members.map(member=> {return {...member,groupBalance:member.groupBalance+amount/temp[0].members.length}})
+      members:temp[0].members.map(member=> {return {...member,groupBalance:member.groupBalance+parseFloat(amount/temp[0].members.length)}})
     }
   }else{
    
@@ -216,10 +216,10 @@ const GroupInfo = ({navigation,route}) => {
                                                 category,
                                                 date,
                                                 method:"byShare",
-                                                amount:parseInt(amount),
-                                                shares:shares
+                                                amount:parseFloat(amount),
+                                                shares:shares.map(m=> ({...m,balance:parseFloat(value(m.memberEmail, sum))}))
                                               }],
-      members:temp[0].members.map(member=> {return {...member,groupBalance:member.groupBalance + parseInt(value(member.memberEmail, sum))}})
+      members:temp[0].members.map(member=> {return {...member,groupBalance:member.groupBalance + parseFloat(value(member.memberEmail, sum))}})
     }
   }
  
@@ -291,9 +291,9 @@ const deleteGroupExpense = async(gid)=>{
   const sum = temp.shares.reduce((acc, { share }) => acc + share, 0);
 
   const newExpense = {
-      amount:groupData[0].amount-parseInt(temp.amount),
+      amount:groupData[0].amount-parseFloat(temp.amount),
       groupExpenses:groupData[0].groupExpenses.filter((exp,idx)=> idx!=gid),
-      members:groupData[0].members.map(member=> {return {...member,groupBalance:member.groupBalance - parseInt(value(member.memberEmail, sum))}})
+      members:groupData[0].members.map(member=> {return {...member,groupBalance:member.groupBalance - parseFloat(value(member.memberEmail, sum))}})
     
   }
  
@@ -392,24 +392,26 @@ const handleEdit=async()=>{
   //old byShare value to be Added
   const newValue=(mEmail,sum)=>{
       const [m]= shares.filter(m=>{if(m.memberEmail===mEmail){ return m}})
-   
+       if(m){
         return ((amount / sum) * m.share)%1===0?parseInt((amount / sum) * m.share).toFixed(0):parseInt((amount / sum) * m.share).toFixed(1)
-   
+      }else{
+        return 0
+      }
     }
   console.log("Outside index: ",index)
   if(index>=0){
     console.log("inside index: ",index)
     if(activeTab===0){
       newExpense = {
-        amount:(temp[0].amount- prev.amount)+parseInt(amount),
+        amount:(temp[0].amount- prev.amount)+parseFloat(amount),
         groupExpenses:temp[0].groupExpenses.map((exp,idx)=>{
               if(idx===index){
                 return{
                   title,category,
-                  date,amount:parseInt(amount),
+                  date,amount:parseFloat(amount),
                   method:"equally",
                   shares:prev.shares.map((member) => {
-                    return { ...member, share: 1};
+                    return { ...member, share: 1,balance:parseFloat(amount/prev.shares.length)};
                   })
                 }
               }else{
@@ -417,27 +419,31 @@ const handleEdit=async()=>{
               }
         })
         ,
-        members:temp[0].members.map(member=> {return {...member,groupBalance:(member.groupBalance - prev.amount/prev.shares.length )+amount/prev.shares.length}})
+        members:temp[0].members.map(member=> {return {...member,groupBalance:(member.groupBalance - prev.amount/prev.shares.length )+parseFloat(amount/prev.shares.length)}})
       }
     }else{
       const prevSum = prev.shares.reduce((acc, { share }) => acc + share, 0);
       const sum = shares.reduce((acc, { share }) => acc + share, 0);
       newExpense = {
-        amount:(temp[0].amount-prev.amount)+parseInt(amount),
+        amount:(temp[0].amount-prev.amount)+parseFloat(amount),
         groupExpenses:temp[0].groupExpenses.map((exp,idx)=>{
               if(idx===index){
                 return{
                   title,category,
-                  date,amount:parseInt(amount),
+                  date,amount:parseFloat(amount),
                   method:"byShare",
-                  shares:shares
+                  shares:shares.map(m=> {
+                                          return{
+                                              ...m,
+                                              balance:parseFloat(newValue(m.memberEmail, sum))
+                                          }})
                 }
               }else{
                 return exp
               }
         })
         ,
-        members:temp[0].members.map(member=> {return {...member,groupBalance:(member.groupBalance-parseInt(oldValue(member.memberEmail, prevSum))) + parseInt(newValue(member.memberEmail, sum))}})
+        members:temp[0].members.map(member=> {return {...member,groupBalance:(member.groupBalance-parseFloat(oldValue(member.memberEmail, prevSum))) + parseFloat(newValue(member.memberEmail, sum))}})
       }
     }
   }
