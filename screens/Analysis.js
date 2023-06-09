@@ -19,11 +19,27 @@ const Analysis = ({navigation}) => {
   
   //fetch expenses according to no of days
   const fetchExpenses=(date)=>{
+    function compareDates(date1, date2) {
+      const [day1, month1, year1] = date1.split('-').map(Number);
+      const [day2, month2, year2] = date2.split('-').map(Number);
+    
+      const jsDate1 = new Date(year1, month1 - 1, day1);
+      const jsDate2 = new Date(year2, month2 - 1, day2);
+    
+      if (jsDate1 >= jsDate2) {
+        return true
+      }  else {
+        return false
+      }
+    }
+    
 
+    
+    
     const categoryTotals = {};
     const groupCategoryTotal = {};
     selfExpenses.forEach(exp=> {
-      if(exp.date === date){
+      if(compareDates(exp.date, date)){
         if (categoryTotals[exp.category]) {
           categoryTotals[exp.category] += exp.amount;
         } else {
@@ -33,11 +49,11 @@ const Analysis = ({navigation}) => {
 
     })
 
-    console.log(categoryTotals)
+    // console.log(date,categoryTotals)
 
     groups.forEach(grp=>{
                           grp.groupExpenses.forEach(exp=>{
-
+                            if(compareDates(exp.date, date)){
                               exp.shares.forEach(s=>{
                                 if(s.memberEmail===user.user.email){
                                             if (groupCategoryTotal[exp.category]) {
@@ -47,10 +63,11 @@ const Analysis = ({navigation}) => {
                                                 }
                                 }
                               })
-                          })
+                          }
+                        })
                         })
 
-    console.log("group: ",groupCategoryTotal)
+    // console.log("group: ",groupCategoryTotal)
 
     const result = {};
 
@@ -72,7 +89,7 @@ const Analysis = ({navigation}) => {
       }
     }
 
-    console.log(result);
+    // console.log(result);
 
     //generate random color
     function generateRandomColor() {
@@ -97,10 +114,10 @@ const Analysis = ({navigation}) => {
       color: generateRandomColor()
     }));
 
-    console.log(formattedResult);
+    // console.log(formattedResult);
     setCategories(formattedResult)
     setValues(formattedResult.map(item=>{return {value:parseFloat(item.percentage),color:item.color}}))
-    console.log(values)
+    // console.log(values)
     setSpent(total)
   }
   
@@ -129,6 +146,21 @@ const Analysis = ({navigation}) => {
     const formattedOneWeekAgo = formatDate(oneWeekAgo);
     const formattedOneMonthAgo = formatDate(oneMonthAgo);
     const formattedOneYearAgo = formatDate(oneYearAgo);
+
+    switch(buttonIndex){
+      case 0: fetchExpenses(formattedToday)
+              break;
+      case 1: fetchExpenses(formattedOneWeekAgo)
+              break;
+      case 2: fetchExpenses(formattedOneMonthAgo)
+              break;
+      case 3: fetchExpenses(formattedOneYearAgo)
+              break;
+      case 4: fetchExpenses('01-01-1999')
+              break;
+      default: console.log("default selected")
+              break;
+    }
   }
 
   
@@ -136,7 +168,6 @@ const Analysis = ({navigation}) => {
     console.log("useEffect Analysis")
     if(user){
        //total expense amount
-
         const categoryTotals = {};
         const groupCategoryTotal = {};
         selfExpenses.forEach(exp=> {
@@ -148,7 +179,7 @@ const Analysis = ({navigation}) => {
           }
         })
 
-        console.log(categoryTotals)
+        // console.log(categoryTotals)
 
         groups.forEach(grp=>{
                               grp.groupExpenses.forEach(exp=>{
@@ -165,7 +196,7 @@ const Analysis = ({navigation}) => {
                               })
                             })
 
-        console.log("group: ",groupCategoryTotal)
+        // console.log("group: ",groupCategoryTotal)
 
         const result = {};
 
@@ -187,7 +218,7 @@ const Analysis = ({navigation}) => {
           }
         }
 
-        console.log(result);
+        // console.log(result);
 
         //generate random color
         function generateRandomColor() {
@@ -212,10 +243,10 @@ const Analysis = ({navigation}) => {
           color: generateRandomColor()
         }));
 
-        console.log(formattedResult);
+        // console.log(formattedResult);
         setCategories(formattedResult)
         setValues(formattedResult.map(item=>{return {value:parseFloat(item.percentage),color:item.color}}))
-        console.log(values)
+        // console.log(values)
         setSpent(total)
       
     }
@@ -347,9 +378,9 @@ const Analysis = ({navigation}) => {
         
       </View>
       <ButtonGroup buttons={['Today', 'Week', 'Month','Year','All']} onPress={handleButtonPress} />
-      {selectedButton !== null && (
+      {/* {selectedButton !== null && (
         <Text style={{color:"white"}}>You selected button {selectedButton + 1}</Text>
-      )}
+      )} */}
     </View>
     </SafeAreaView>
 );

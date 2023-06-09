@@ -20,6 +20,13 @@ const Graph = ({navigation}) => {
   const [isVisible, setIsVisible] = useState(false);
   const [error , setError] = useState(null);
   
+  const handleAnalysis = ()=>{
+    const rBalance = parseFloat(balance) - parseFloat(spent)
+    console.log(rBalance)
+    setIsVisible(!isVisible)
+  }
+
+
   const changeBalance =async()=>{
    
     if(!user){
@@ -65,7 +72,7 @@ const Graph = ({navigation}) => {
         setSpent(total)
       
     }
-  },[toggle,user])
+  },[groups,selfExpenses,user])
 
   return (
   
@@ -159,7 +166,7 @@ const Graph = ({navigation}) => {
           </ScrollView>
 
         <TouchableOpacity
-            onPress={()=>{setIsVisible(!isVisible)}}
+            onPress={handleAnalysis}
             style={{
               borderColor:"red",
               borderWidth:3,
@@ -262,7 +269,7 @@ const Graph = ({navigation}) => {
                                     color: '#fff',
                         }}>Confirm</Text>
                   </TouchableOpacity>
-        </View>
+              </View>
 
             </View>
           </View>
