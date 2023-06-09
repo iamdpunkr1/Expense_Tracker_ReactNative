@@ -18,12 +18,96 @@ const Graph = ({navigation}) => {
   const [spent,setSpent] = useState(0)
   const [active , setactive] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
+  const [categories, setCategories] =  useState(null)
+  const [values, setValues] =  useState(null)
   const [error , setError] = useState(null);
   
   const handleAnalysis = ()=>{
+    
     const rBalance = parseFloat(balance) - parseFloat(spent)
     console.log(rBalance)
     setIsVisible(!isVisible)
+
+
+           //total expense amount
+           const categoryTotals = {};
+           const groupCategoryTotal = {};
+           selfExpenses.forEach(exp=> {
+             
+             if (categoryTotals[exp.category]) {
+               categoryTotals[exp.category] += exp.amount;
+             } else {
+               categoryTotals[exp.category] = exp.amount;
+             }
+           })
+   
+           // console.log(categoryTotals)
+   
+           groups.forEach(grp=>{
+                                 grp.groupExpenses.forEach(exp=>{
+   
+                                     exp.shares.forEach(s=>{
+                                       if(s.memberEmail===user.user.email){
+                                                   if (groupCategoryTotal[exp.category]) {
+                                                       groupCategoryTotal[exp.category] += s.balance;
+                                                       } else {
+                                                         groupCategoryTotal[exp.category] = s.balance;
+                                                       }
+                                       }
+                                     })
+                                 })
+                               })
+   
+           // console.log("group: ",groupCategoryTotal)
+   
+           const result = {};
+   
+           // Add values from categoryTotals to result
+           for (const key in categoryTotals) {
+             if (result[key]) {
+               result[key] += categoryTotals[key];
+             } else {
+               result[key] = categoryTotals[key];
+             }
+           }
+   
+           // Add values from groupCategoryTotal to result
+           for (const key in groupCategoryTotal) {
+             if (result[key]) {
+               result[key] += groupCategoryTotal[key];
+             } else {
+               result[key] = groupCategoryTotal[key];
+             }
+           }
+   
+           // console.log(result);
+   
+           //generate random color
+           function generateRandomColor() {
+             const letters = "0123456789ABCDEF";
+             let color = "#";
+             for (let i = 0; i < 6; i++) {
+               color += letters[Math.floor(Math.random() * 16)];
+             }
+             return color;
+           }
+           
+           
+   
+           // Calculate the total sum of all amounts
+           const total = Object.values(result).reduce((acc, cur) => acc + cur, 0);
+   
+           // Calculate the percentage for each category and format the output
+           const formattedResult = Object.entries(result).map(([category, amount]) => ({
+             category,
+             amount:(rBalance * ((((amount / total) * 100).toFixed(2))/100) ).toFixed(2),
+             percentage: ((amount / total) * 100).toFixed(2),
+             color: generateRandomColor()
+           }));
+   
+           // console.log(formattedResult);
+           setCategories(formattedResult)
+           setValues(formattedResult.map(item=>{return {value:parseFloat(item.percentage),color:item.color}}))
   }
 
 
@@ -162,7 +246,7 @@ const Graph = ({navigation}) => {
                           // </View>
                       }
           <ScrollView style={{height:450}}>
-             {isVisible && <Donut/>}
+             {isVisible && <Donut values={values} categories={categories} spent={balance-spent}/>}
           </ScrollView>
 
         <TouchableOpacity
