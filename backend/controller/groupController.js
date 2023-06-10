@@ -172,7 +172,23 @@ const updateExpense = async (req, res) =>{
     }
 }
 
- 
+//delete a expense
+const deleteGroup = async (req, res) =>{
+    const { id } = req.params
+  
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(404).json({error: 'No such Group exist'})
+    }
+  
+    const expense = await Group.findOneAndDelete({_id: id})
+  
+    if (!expense) {
+      return res.status(400).json({error: 'No such Group exist'})
+    }
+  
+    res.status(200).json(expense)
+  }
+
 module.exports={
     addGroup,
     getGroups,
@@ -181,5 +197,6 @@ module.exports={
     deleteGroupExpense,
     addExpense,
     updateExpense,
-    getGroup
+    getGroup,
+    deleteGroup
 }

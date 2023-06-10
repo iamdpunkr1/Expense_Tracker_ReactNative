@@ -1,11 +1,8 @@
 import { View, Text, TouchableOpacity,ScrollView,Modal, TextInput, Image } from 'react-native'
 import React, {useState, useEffect}  from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import Ionicons from 'react-native-vector-icons/Ionicons'
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'
-import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
-import Groups from '../partials/Groups'
 import DashGroup from '../partials/DashGroup'
 import Expense from '../partials/Expense'
 import DropdownComponent from '../partials/DropdownComponent'
@@ -15,8 +12,9 @@ import { useAuthContext } from '../hooks/useAuthContext'
 import { useExpenseContext } from '../context/ExpenseContext'
 
 const Home = ({navigation}) => {
-  //getting data from Context
+  //user data from Context
   const {user}=useAuthContext()
+  //expenses data from context
   const { selfExpenses, setSelfExpenses,groups, setGroups,toggle } = useExpenseContext()
   
   //total expense amount
@@ -41,8 +39,11 @@ const Home = ({navigation}) => {
   const [title, setTitle] = useState("");
   const [category, setCategory] = useState("General");
   //date
-  let today = new Date()
-  let currDate = today.getDate() + '-' + parseInt(today.getMonth() + 1) + '-' +today.getFullYear() 
+  const today = new Date();
+  const day = String(today.getDate()).padStart(2, '0');
+  const month = String(today.getMonth() + 1).padStart(2, '0');
+  const year = today.getFullYear();
+  const currDate = day + '-' + month + '-' + year;
   const [date, setDate] = useState(currDate)
   //group states
   const [groupTitle, setGroupTitle] = useState("");
@@ -86,9 +87,11 @@ const Home = ({navigation}) => {
 
   //Add expense
   const handleSubmit= async()=>{
-    // e.preventDefault()
     if (!user) {
       setError('You must be logged in')
+      return
+    }else if(title.length==0 || parseInt(amount)<0){
+      setError('All fields are required')
       return
     }
 
@@ -145,7 +148,6 @@ const Home = ({navigation}) => {
 
   //create groups
   const addGroup= async()=>{ 
-    // e.preventDefault()
     if(!user){
       setError("You must be logged in")
     }
@@ -170,6 +172,30 @@ const Home = ({navigation}) => {
     }
 
   }
+
+  //delete groupS
+  const deleteGroup = async(_id)=>{
+    
+    if(!user){
+      setError('You must be logged in')
+        return
+      }
+
+  const response = await fetch('http://10.0.2.2:4000/dashboard/group/'+_id,{
+    method:'DELETE',
+    headers:{
+      'Authorization': `Bearer ${user.token}`
+    }
+  })
+
+  const json = await response.json()
+
+  if(response.ok){
+    const newGroups=groups.filter(group=> group._id !== json._id )
+    setGroups(newGroups)
+  }
+   
+  }
   return (
 
     <SafeAreaView style={{flex:1, backgroundColor:"#0d0f14"}}>
@@ -182,7 +208,7 @@ const Home = ({navigation}) => {
             source={require('../assets/user3.png')}
             style={{height: 55, width: 55}}
           />
-            <Text style={{color:"white",marginTop:12, fontSize:20, marginLeft:5,fontFamily:"Roboto-Medium",}}>Hi, {user && user.user.username}</Text>
+            <Text style={{color:"white",marginTop:12, fontSize:20, marginLeft:5,fontFamily:"Roboto-Medium",}}>Hi, { user && user.user.username.split(' ')[0]+' !'}</Text>
           </View>
       
             <TouchableOpacity
@@ -244,7 +270,8 @@ const Home = ({navigation}) => {
                               color="#9ca3af"
                               style={{marginRight: 5}}
                             />
-                            <TextInput   placeholderTextColor={"#9ca3af"} placeholder='Enter the group name'
+                            <TextInput    required={true}
+                                          placeholderTextColor={"#9ca3af"} placeholder='Enter the group name'
                                           value={groupTitle} onChangeText={(txt)=>{setGroupTitle(txt)}}
                                           style={{paddingVertical:0, color:"white",minWidth:'75%'}}/>
                           </View>
@@ -297,18 +324,18 @@ const Home = ({navigation}) => {
 
        {/*Groups text start */}
         <View style={{flex:0,flexDirection:'row',justifyContent:'space-between',marginTop:25}}>
-            <Text  className='font-bold'   style={{color:"white", fontSize:18,fontFamily:"Roboto-Medium",}}>Groups</Text>
+            <Text  className='font-bold'   style={{color:"white", fontSize:18,fontFamily:"Roboto-Medium",}}>Groups:</Text>
             <TouchableOpacity
               onPress={()=>{setactive(!active)}}
               className='rounded' style={{backgroundColor:"#b5807f"}}>
-            <Text   style={{color:"black", fontSize:18,fontFamily:"Roboto-Medium", paddingHorizontal:15,fontWeight:"bold"}}>+</Text>
+              <Text   style={{color:"black", fontSize:18,fontFamily:"Roboto-Medium" ,paddingHorizontal:15,fontWeight:"bold"}}>+</Text>
             </TouchableOpacity>
         </View>
         {/*Groups text end */}
         {/*Groups Boxes start */}
-        <ScrollView horizontal={true} className=' h-32'>
+        <ScrollView horizontal={true} className=' h-38'>
           <View  style={{flex:0,flexDirection:'row' ,justifyContent:'space-evenly',alignContent:'space-between', marginTop:6,}}>
-          {groups.length>0 && groups.map((grp)=><DashGroup groupData={grp} nav={navigation} key={grp._id} />)} 
+          {groups.length>0 && groups.map((grp)=><DashGroup deleteGroup={deleteGroup} groupData={grp} nav={navigation} key={grp._id} />)} 
             {/* <DashGroup iname="shopping-basket" name="Ration" amount={1500} nav={navigation}/>
             <DashGroup iname="restroom" name="Rent" amount={3300} nav={navigation}/> */}
           </View>
@@ -317,7 +344,7 @@ const Home = ({navigation}) => {
 
         {/*Personal text start */}
         <View style={{flex:0,flexDirection:'row',justifyContent:'space-between',marginTop:40}}>
-            <Text   className='font-bold'   style={{color:"white", fontSize:18,fontFamily:"Roboto-Medium",}}>Recent Expenses</Text>
+            <Text   className='font-bold'   style={{color:"white", fontSize:18,fontFamily:"Roboto-Medium",}}>Personal Expenses</Text>
             <TouchableOpacity className='rounded' onPress={()=>navigation.navigate("Expenses")}>
               <Text   className='font-bold'  style={{color:"#e44816", fontSize:16,fontFamily:"Roboto-Medium",}}>View all</Text>
              </TouchableOpacity>
@@ -437,8 +464,12 @@ const Home = ({navigation}) => {
                               </View>
                           </View>
 
-                        
-                  <View style={{flex:0,flexDirection:'row',marginTop:35}}>
+                          {error && 
+                          // <View style={{borderColor:"red",borderRadius:7,borderWidth:4,padding:10}}>
+                            <Text style={{color:"red",fontSize:18,textAlign:"center",marginTop:15}}>{error}</Text>
+                          // </View>
+                      }
+                  <View style={{flex:0,flexDirection:'row',marginTop:15}}>
                       <TouchableOpacity
                             style={{
                               backgroundColor: '#492d33',
@@ -475,11 +506,7 @@ const Home = ({navigation}) => {
                                         color: '#fff',
                             }}>Add Expense</Text>
                       </TouchableOpacity>
-                      {error && 
-                          // <View style={{borderColor:"red",borderRadius:7,borderWidth:4,padding:10}}>
-                            <Text style={{color:"red",fontSize:18,textAlign:"center"}}>{error}</Text>
-                          // </View>
-                      }
+
               </View>
             </View>
           </View>
