@@ -51,7 +51,7 @@ const DatePicker = ({date, setDate}) => {
         mode="date"
         onConfirm={handleConfirm}
         onCancel={hideDatePicker}
-        
+        maximumDate={new Date("2023-06-13")}
       />
     </View>
   );

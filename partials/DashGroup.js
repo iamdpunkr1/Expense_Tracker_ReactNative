@@ -5,7 +5,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'
 import AntDesign from 'react-native-vector-icons/AntDesign'
 
-const DashGroup = ({groupData, nav, deleteGroup}) => {
+const DashGroup = ({groupData, nav, deleteGroup,isGroupAdmin}) => {
   
   const {groupTitle, groupCategory,amount,_id}=groupData 
 
@@ -47,9 +47,12 @@ const DashGroup = ({groupData, nav, deleteGroup}) => {
             </Text>                
       </LinearGradient>
     </TouchableOpacity>
-    <TouchableOpacity style={{borderRadius:6,marginTop:4,justifyContent:'center',alignItems:'center',}} onPress={()=> {deleteGroup(_id)}}>
-      <AntDesign name='delete' size={18} color="grey"/>
-    </TouchableOpacity>
+    {isGroupAdmin && 
+          <TouchableOpacity style={{borderRadius:6,marginTop:4,justifyContent:'center',alignItems:'center',}} onPress={()=> {deleteGroup(_id)}}>
+          <AntDesign name='delete' size={18} color="grey"/>
+        </TouchableOpacity>
+      }
+
   </View>
   )
 }

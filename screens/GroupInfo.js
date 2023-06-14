@@ -7,7 +7,6 @@ import Tabs from '../partials/Tabs'
 import { FloatingAction } from "react-native-floating-action";
 import DatePicker from '../partials/DatePicker'
 import DropdownComponent from '../partials/DropdownComponent'
-import AntDesign from 'react-native-vector-icons/AntDesign'
 import Share from '../partials/Share'
 import LinearGradient from 'react-native-linear-gradient'
 import { useAuthContext } from '../hooks/useAuthContext'
@@ -86,7 +85,7 @@ const GroupInfo = ({navigation,route}) => {
 
   },[groups])
 
-  // console.log("Shares " ,shares)
+
   //remove Member
   const deleteMember=async(mEmail)=>{
     if(!user){
@@ -134,6 +133,7 @@ const GroupInfo = ({navigation,route}) => {
       }
      }else{
       setError("User has Dues left")
+      
      }    
 
   }
@@ -491,7 +491,14 @@ const handleEdit=async()=>{
 
 }
 
- const actions = [
+const isGroupAdmin =(name)=>{
+  if(name===(user && user.user.username)){
+    return true
+  }else{
+    return false
+  }
+}
+ const floatData=[
   {
     text: "Add Expense",
     icon: <FontAwesome5 name="file-invoice"  size={18} color="#d7261b"/>,
@@ -508,6 +515,18 @@ const handleEdit=async()=>{
   },
  
 ];
+ const actions = floatData.filter(item=>{
+  if(item.position===2){
+    if(isGroupAdmin(groupData && groupData[0].createdBy)){
+      return item
+    }else{
+      return ''
+    }
+  }else{
+      return item
+  }
+ })
+
   return (
 
     <SafeAreaView style={{flex:1, backgroundColor:"#0d0f14"}}>
@@ -527,7 +546,7 @@ const handleEdit=async()=>{
              <Text    className='font-bold mt-1 ml-1' style={{fontFamily:"Roboto-Medium", color:"white",fontSize:30}}>
                  {groupData && groupData[0].groupTitle}
              </Text>
-             <Text  style={{color:"white", fontSize:16, marginLeft:5,fontFamily:"Roboto-Medium",}}>Created by: You</Text>
+             <Text  style={{color:"white", fontSize:16, marginLeft:5,fontFamily:"Roboto-Medium",}}>Created by: {isGroupAdmin( groupData && groupData[0].createdBy)===true? 'You':  groupData && groupData[0].createdBy}</Text>
         </LinearGradient>
         {/*Group Info! end */}
         {error && 
@@ -542,11 +561,13 @@ const handleEdit=async()=>{
                                                                                             <Text  className='font-bold'  style={{color:"white", fontSize:15,fontFamily:"Roboto-Medium",marginTop:5}}>{member.memberName}</Text> 
                                                                                         </View>
                                                                              }else{
-                                                                                     return  <View   key={member.memberEmail} style={{backgroundColor:"#595b62",flex:0,justifyContent:'center',alignItems:'center',flexDirection:'row'}}   className='rounded-md pb-1 px-3 mb-2'>
+                                                                                     return  <View   key={member.memberEmail} style={{backgroundColor:"#595b62",flex:0,justifyContent:'center',alignItems:'center',flexDirection:'row',marginRight:4}}   className='rounded-md pb-1 px-3 mb-2'>
                                                                                                <Text  className='font-bold'  style={{color:"white", fontSize:15,fontFamily:"Roboto-Medium",marginTop:5}}>{member.memberName}</Text> 
-                                                                                               <TouchableOpacity onPress={()=>{deleteMember(member.memberEmail)}}>
+                                                                                              {(isGroupAdmin(groupData && groupData[0].createdBy) || (user.user.username===member.memberName))
+                                                                                              ?
+                                                                                              <TouchableOpacity onPress={()=>{deleteMember(member.memberEmail)}}>
                                                                                                 <Ionicons style={{marginTop:4, marginLeft:4}} name='close' size={20} color="#fff" />              
-                                                                                               </TouchableOpacity>
+                                                                                               </TouchableOpacity>:''} 
                                                                                              </View>
                                                                              }
                                                                             }))}

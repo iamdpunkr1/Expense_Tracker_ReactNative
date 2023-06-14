@@ -150,7 +150,12 @@ const Home = ({navigation}) => {
   const addGroup= async()=>{ 
     if(!user){
       setError("You must be logged in")
+      return
+    }else if(groupTitle.length===0){
+      setError("Group name can't be empty")
+      return
     }
+
     const group={groupTitle, groupCategory,amount:0,createdBy:user.user.username,members:[{memberName:user.user.username, memberEmail:user.user.email, groupBalance:0}],groupExpenses:[]}
     const response = await fetch('http://10.0.2.2:4000/dashboard/groups',{
       method:'POST',
@@ -195,6 +200,14 @@ const Home = ({navigation}) => {
     setGroups(newGroups)
   }
    
+  }
+
+  const isGroupAdmin =(name)=>{
+    if(name===(user && user.user.username)){
+      return true
+    }else{
+      return false
+    }
   }
   return (
 
@@ -248,7 +261,7 @@ const Home = ({navigation}) => {
                             justifyContent: 'center',}}>
             <View  style={ {
                         backgroundColor : "black" ,
-                        height :300 ,
+                        height :320 ,
                         minWidth:'90%',
                         borderRadius : 15,
                         alignItems : "center",
@@ -266,19 +279,23 @@ const Home = ({navigation}) => {
                        <View className=' border-solid border-2 w-full border-b-gray-400'  style={{flexDirection:"row"}}>
                           <MaterialIcons
                               name='groups'
-                              size={30}
+                              size={35}
                               color="#9ca3af"
                               style={{marginRight: 5}}
                             />
                             <TextInput    required={true}
                                           placeholderTextColor={"#9ca3af"} placeholder='Enter the group name'
                                           value={groupTitle} onChangeText={(txt)=>{setGroupTitle(txt)}}
-                                          style={{paddingVertical:0, color:"white",minWidth:'75%'}}/>
+                                          style={{paddingVertical:0, color:"white",minWidth:'75%',fontSize:17}}/>
                           </View>
                <View style={{flex:0,width:"90%"}}>
                <DropdownComponent  category={groupCategory} setCategory={setGroupCategory}/>
                 </View>           
-
+                {error && 
+                          // <View style={{borderColor:"red",borderRadius:7,borderWidth:4,padding:10}}>
+                            <Text style={{color:"red",fontSize:18,textAlign:"center",marginTop:15}}>{error}</Text>
+                          // </View>
+                      }
                   <View style={{flex:0,flexDirection:'row',marginTop:20}}>
                             <TouchableOpacity
                                   style={{
@@ -324,7 +341,7 @@ const Home = ({navigation}) => {
 
        {/*Groups text start */}
         <View style={{flex:0,flexDirection:'row',justifyContent:'space-between',marginTop:25}}>
-            <Text  className='font-bold'   style={{color:"white", fontSize:18,fontFamily:"Roboto-Medium",}}>Groups:</Text>
+            <Text  className='font-bold'   style={{color:"white", fontSize:18,fontFamily:"Roboto-Medium",}}>Groups :</Text>
             <TouchableOpacity
               onPress={()=>{setactive(!active)}}
               className='rounded' style={{backgroundColor:"#b5807f"}}>
@@ -335,7 +352,7 @@ const Home = ({navigation}) => {
         {/*Groups Boxes start */}
         <ScrollView horizontal={true} className=' h-38'>
           <View  style={{flex:0,flexDirection:'row' ,justifyContent:'space-evenly',alignContent:'space-between', marginTop:6,}}>
-          {groups.length>0 && groups.map((grp)=><DashGroup deleteGroup={deleteGroup} groupData={grp} nav={navigation} key={grp._id} />)} 
+          {groups.length>0 && groups.map((grp)=><DashGroup isGroupAdmin={isGroupAdmin(grp.createdBy)} deleteGroup={deleteGroup} groupData={grp} nav={navigation} key={grp._id} />)} 
             {/* <DashGroup iname="shopping-basket" name="Ration" amount={1500} nav={navigation}/>
             <DashGroup iname="restroom" name="Rent" amount={3300} nav={navigation}/> */}
           </View>
@@ -344,7 +361,7 @@ const Home = ({navigation}) => {
 
         {/*Personal text start */}
         <View style={{flex:0,flexDirection:'row',justifyContent:'space-between',marginTop:40}}>
-            <Text   className='font-bold'   style={{color:"white", fontSize:18,fontFamily:"Roboto-Medium",}}>Personal Expenses</Text>
+            <Text   className='font-bold'   style={{color:"white", fontSize:18,fontFamily:"Roboto-Medium",}}>Personal Expenses :</Text>
             <TouchableOpacity className='rounded' onPress={()=>navigation.navigate("Expenses")}>
               <Text   className='font-bold'  style={{color:"#e44816", fontSize:16,fontFamily:"Roboto-Medium",}}>View all</Text>
              </TouchableOpacity>

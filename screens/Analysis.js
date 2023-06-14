@@ -3,6 +3,7 @@ import React,{useState,useEffect} from 'react'
 import {  PieChart } from "react-native-gifted-charts";
 import ButtonGroup from '../partials/ButtonGroup';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
+import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useExpenseContext } from '../context/ExpenseContext';
 import { useAuthContext } from '../hooks/useAuthContext';
@@ -325,7 +326,8 @@ const Analysis = ({navigation}) => {
                 centerLabelComponent={() => {
                   return (
                     <View style={{justifyContent: 'center', alignItems: 'center'}}>
-                      <Text style={{color: 'white', fontSize: 20}}>{spent}</Text>
+                      <FontAwesome5  name='rupee-sign' size={16} color="white"/>
+                      <Text style={{color: 'white', fontSize: 20}}> {spent}</Text>
                       <Text style={{color: 'white', fontSize: 14 }}>Total</Text>
                     </View>
                   );
@@ -359,7 +361,8 @@ const Analysis = ({navigation}) => {
               />
               <Text style={{color: 'white', fontSize: 16}}>{item.category || ''}</Text>
             </View>
-            <View>
+            <View style={{flexDirection:"row"}}>
+            <FontAwesome5 style={{paddingTop:4,marginRight:3}} name='rupee-sign' size={16} color="white"/>
               <Text style={{color: 'white', fontSize: 16}}>{ `${item.amount} ( ${item.percentage}% )` || ''}</Text>
             </View>
           </View>

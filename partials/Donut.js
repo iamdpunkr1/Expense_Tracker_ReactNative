@@ -1,9 +1,9 @@
 import { PieChart } from "react-native-gifted-charts";
 import { View, Text } from 'react-native'
+import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'
 import React from 'react'
 
 const Donut = ({values, categories, spent}) => {
-
     
       return (
         <View>
@@ -48,6 +48,7 @@ const Donut = ({values, categories, spent}) => {
               centerLabelComponent={() => {
                 return (
                   <View style={{alignItems:"center"}}>
+                    <FontAwesome5  name='rupee-sign' size={16} color="white"/>
                     <Text style={{color: 'white', fontSize: 26}}>{spent}</Text>
                     <Text style={{color: 'white', fontSize: 15}}>Total</Text>
                   </View>
@@ -79,7 +80,8 @@ const Donut = ({values, categories, spent}) => {
               />
               <Text style={{color: 'white', fontSize: 16}}>{item.category || ''}</Text>
             </View>
-            <View>
+            <View style={{flexDirection:"row"}}>
+            <FontAwesome5 style={{paddingTop:4,marginRight:3}} name='rupee-sign' size={16} color="white"/>
               <Text style={{color: 'white', fontSize: 16}}>{ `${item.amount} ( ${item.percentage}% )` || ''}</Text>
             </View>
           </View>
