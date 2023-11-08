@@ -313,7 +313,7 @@ const Graph = ({navigation}) => {
                                value={balance}
                                onChangeText={(e)=>setBalance(e)}
                                placeholder='Enter the amount'
-                                 style={{paddingVertical:0, color:"white",minWidth:'75%',fontSize:24}}/>
+                                style={{paddingVertical:0, color:"white",minWidth:'75%',fontSize:24}}/>
                           </View>        
 
         <View style={{flex:0,flexDirection:'row',marginTop:20}}>

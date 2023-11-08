@@ -186,8 +186,7 @@ const GroupInfo = ({navigation,route}) => {
       return ((amount / sum) * m.share)%1===0?parseInt((amount / sum) * m.share).toFixed(0):parseInt((amount / sum) * m.share).toFixed(2)
  
     }
-  //   const sum = shares.reduce((acc, { share }) => acc + share, 0);
-  // console.log(24+ parseInt(value('test2@gmail.com',sum)))
+
   let temp=groupData
   let newExpense='';
   if(activeTab===0){
