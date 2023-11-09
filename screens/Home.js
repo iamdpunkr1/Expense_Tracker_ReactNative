@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity,ScrollView,Modal, TextInput, Image } from 'react-native'
+import { View, Text, TouchableOpacity,ScrollView,Modal, TextInput, Image, StatusBar } from 'react-native'
 import React, {useState, useEffect}  from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'
@@ -212,6 +212,8 @@ const Home = ({navigation}) => {
   return (
 
     <SafeAreaView style={{flex:1, backgroundColor:"#0d0f14"}}>
+      <StatusBar backgroundColor="#0d0f14"/>
+
    {/*Padding Horizontal start*/}
      <View  style={{paddingHorizontal:15}}>
       {/*Hi Dipankar! start */}

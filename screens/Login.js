@@ -1,5 +1,5 @@
 import React,{useState} from 'react'
-import {SafeAreaView, Text, View ,Image, TextInput, Button, TouchableOpacity} from 'react-native'
+import {SafeAreaView, Text, View ,Image, TextInput, TouchableOpacity, StatusBar, ActivityIndicator} from 'react-native'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import { useLogin } from '../hooks/useLogin'
 import { useAuthContext } from '../hooks/useAuthContext'
@@ -9,14 +9,21 @@ const Login = ({navigation}) => {
   const {login, error, isLoading} = useLogin()
   
   const handleSubmit = async()=>{
-    // e.preventDefault()
 
     await login(email,password,navigation)
+  }
 
+  if(isLoading){
+    return (
+      <SafeAreaView style={{flex:1,justifyContent:"center", backgroundColor:"#0d0f14"}} >
+      <StatusBar backgroundColor="#0d0f14"/>
+        <ActivityIndicator size="large" color="#d3d3d3" />
+      </SafeAreaView>
+    )
   }
   return (
     <SafeAreaView style={{flex:1,justifyContent:"center", backgroundColor:"#0d0f14"}} >
-      
+      <StatusBar backgroundColor="#0d0f14"/>
       <View style={{paddingHorizontal:25}}>
         <View style={{alignItems:"center"}}>
         <Image source={require('../assets/login.png')}  style={{width: 350, height: 250}}/>
