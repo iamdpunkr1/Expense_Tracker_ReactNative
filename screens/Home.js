@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity,ScrollView,Modal, TextInput, Image, StatusBar } from 'react-native'
+import { View, Text, TouchableOpacity,ScrollView,Modal, TextInput, Image, StatusBar, ActivityIndicator } from 'react-native'
 import React, {useState, useEffect}  from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'
@@ -49,6 +49,8 @@ const Home = ({navigation}) => {
   const [groupTitle, setGroupTitle] = useState("");
   const [groupCategory, setGroupCategory] = useState("General");
 
+  //loader
+  const [isLoading, setIsLoading] = useState(true)
    //refresh every time there is a change in expenses
     useEffect(()=>{
       console.log("useEffect HOME")
@@ -60,6 +62,7 @@ const Home = ({navigation}) => {
   
         if (response.ok) {
           setSelfExpenses(json)
+          setIsLoading(false)
         }
       }
   
@@ -74,6 +77,9 @@ const Home = ({navigation}) => {
   
         if(response.ok){
           setGroups(json)
+          if(isLoading){
+            setIsLoading(false)
+          }
         }
       }
     
@@ -113,7 +119,7 @@ const Home = ({navigation}) => {
     }
     if (response.ok) {
      // const expenseId= (Math.random() + 1).toString(36).substring(2);
-      setSelfExpenses([...selfExpenses,json])
+      setSelfExpenses([json,...selfExpenses])
       setAmount('0')
       setTitle('')
       setCategory("General")
@@ -209,6 +215,16 @@ const Home = ({navigation}) => {
       return false
     }
   }
+
+  if(isLoading){
+    return (
+      <SafeAreaView style={{flex:1,justifyContent:"center", backgroundColor:"#0d0f14"}} >
+      <StatusBar backgroundColor="#0d0f14"/>
+        <ActivityIndicator size="large" color="#d3d3d3" />
+      </SafeAreaView>
+    )
+  }
+
   return (
 
     <SafeAreaView style={{flex:1, backgroundColor:"#0d0f14"}}>
@@ -370,7 +386,7 @@ const Home = ({navigation}) => {
         </View>
          {/*Personal text END*/}
          {/*Personal Expenses start */}
-        <View style={{flex:0,flexDirection:'column',marginTop:3,maxHeight:320}}>
+        <View style={{flex:0,flexDirection:'column',marginTop:3,maxHeight:300}}>
           <ScrollView>
           {selfExpenses.length>0 && selfExpenses.map((exp)=><Expense deleteSelfExpense={deleteSelfExpense} gid={exp._id}  key={exp._id} expenseData={exp}/>)}
             {/* <Expense iname="fast-food-outline" name="Expense" date="20-05-2023" amount={199}/> */}

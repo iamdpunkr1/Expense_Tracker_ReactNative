@@ -1,4 +1,4 @@
-import { View, Text, SafeAreaView, TouchableOpacity, Modal, TextInput, ScrollView, StatusBar } from 'react-native'
+import { View, Text, SafeAreaView, TouchableOpacity, Modal, TextInput, ScrollView, StatusBar, ActivityIndicator } from 'react-native'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
@@ -526,6 +526,14 @@ const isGroupAdmin =(name)=>{
   }
  })
 
+ if(!groupData){
+  return (
+    <SafeAreaView style={{flex:1,justifyContent:"center", backgroundColor:"#0d0f14"}} >
+    <StatusBar backgroundColor="#0d0f14"/>
+      <ActivityIndicator size="large" color="#d3d3d3" />
+    </SafeAreaView>
+    )
+  }
   return (
 
     <SafeAreaView style={{flex:1, backgroundColor:"#0d0f14"}}>
