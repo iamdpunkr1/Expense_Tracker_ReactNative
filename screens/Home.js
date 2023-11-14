@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity,ScrollView,Modal, TextInput, Image, StatusBar, ActivityIndicator } from 'react-native'
+import { View, Text, TouchableOpacity,ScrollView,Modal, TextInput, Image, StatusBar, ActivityIndicator  } from 'react-native'
 import React, {useState, useEffect}  from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'
@@ -216,6 +216,8 @@ const Home = ({navigation}) => {
     }
   }
 
+
+  //show activity indicator while loading
   if(isLoading){
     return (
       <SafeAreaView style={{flex:1,justifyContent:"center", backgroundColor:"#0d0f14"}} >

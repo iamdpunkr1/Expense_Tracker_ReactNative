@@ -526,6 +526,8 @@ const isGroupAdmin =(name)=>{
   }
  })
 
+ 
+  //show activity indicator while loading
  if(!groupData){
   return (
     <SafeAreaView style={{flex:1,justifyContent:"center", backgroundColor:"#0d0f14"}} >
