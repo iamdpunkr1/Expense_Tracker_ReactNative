@@ -2,9 +2,12 @@
 
 Expense Tracker is an cross platform mobile application designed to simplify and streamline expense management. The primary goal of this project is to provide users with an easy and efficient system for tracking their daily expenses. Additionally, it facilitates the tracking of money lent to others through group creation and member addition.
 
-![Screenshot (73)](https://github.com/iamdpunkr1/Expense_Tracker_ReactNative/assets/65856604/0417a740-efcc-47d1-b280-93b703c88d8c)
-![Screenshot (80)](https://github.com/iamdpunkr1/Expense_Tracker_ReactNative/assets/65856604/5417987f-29bf-4e29-93db-526d9f7fd79c)
-
+<div align="center">
+  <img src="https://github.com/iamdpunkr1/Expense_Tracker_ReactNative/assets/65856604/0417a740-efcc-47d1-b280-93b703c88d8c" width="200" alt="Screenshot (73)">
+  <img src="https://github.com/iamdpunkr1/Expense_Tracker_ReactNative/assets/65856604/549d77b5-16e3-4235-aad3-a15d8996cc68" width="200" alt="Screenshot (74)">
+  <img src="https://github.com/iamdpunkr1/Expense_Tracker_ReactNative/assets/65856604/913ca31b-81de-4ce8-946d-c56d67404901" width="200" alt="Screenshot (78)">
+  <img src="https://github.com/iamdpunkr1/Expense_Tracker_ReactNative/assets/65856604/5417987f-29bf-4e29-93db-526d9f7fd79c" width="200" alt="Screenshot (80)">
+</div>
 
 
 ## Features
