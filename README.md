@@ -34,9 +34,6 @@ Expense Tracker is an cross platform mobile application designed to simplify and
     ```bash
     git clone https://github.com/iamdpunkr1/Expense_Tracker_ReactNative.git
     cd Expense_Tracker_ReactNative
-    npm i
-    npx react-native run-android //for Android
-    npx react-native run-ios  //for IOS
 
     ```
 
@@ -47,7 +44,8 @@ Expense Tracker is an cross platform mobile application designed to simplify and
 
 3. **Run the Application:**
     ```bash
-    npm start
+    npx react-native run-android //for Android
+    npx react-native run-ios  //for IOS
     ```
 
 4. **Open on Android Device/Emulator:**
@@ -77,4 +75,3 @@ This project is licensed under the [MIT License](LICENSE).
 
 ---
 
-*This README template is just a starting point. Modify it to suit your project's specific needs.*
